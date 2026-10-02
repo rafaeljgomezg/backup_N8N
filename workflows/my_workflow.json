@@ -18,7 +18,7 @@
         0
       ],
       "id": "7c9811af-febe-445a-a91a-0b6eced92036",
-      "name": "When clicking ‘Execute workflow’"
+      "name": "When clicking Execute workflow"
     },
     {
       "parameters": {
@@ -44,7 +44,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Acessa a lista de fluxos retornada pela API do n8n\nconst workflows = $input.first().json.data; \n\n// Mapeia cada fluxo gerando um item independente para o nó do GitHub\nreturn workflows.map(wf => {\n  // Limpa o nome do fluxo para evitar caracteres inválidos no sistema de arquivos\n  const safeName = wf.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();\n  \n  return {\n    json: {\n      fileName: `workflows/${safeName}.json`,\n      fileContent: JSON.stringify(wf, null, 2) // Transforma o JSON em texto formatado\n    }\n  };\n});\n"
+        "jsCode": "// Acessa a lista de fluxos retornada pela API do n8n\nconst workflows = $input.first().json.data; \n\n// Mapeia cada fluxo gerando um item independente para o n� do GitHub\nreturn workflows.map(wf => {\n  // Limpa o nome do fluxo para evitar caracteres inv�lidos no sistema de arquivos\n  const safeName = wf.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();\n  \n  return {\n    json: {\n      fileName: `workflows/${safeName}.json`,\n      fileContent: JSON.stringify(wf, null, 2) // Transforma o JSON em texto formatado\n    }\n  };\n});\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -88,7 +88,7 @@
     }
   ],
   "connections": {
-    "When clicking ‘Execute workflow’": {
+    "When clicking Execute workflow": {
       "main": [
         [
           {
