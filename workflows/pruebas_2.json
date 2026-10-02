@@ -18,7 +18,7 @@
         -32
       ],
       "id": "ddc50556-cd7d-4364-a99d-55fb0749fca5",
-      "name": "When clicking ‘Execute workflow’"
+      "name": "When clicking Execute workflow"
     },
     {
       "parameters": {
@@ -106,7 +106,7 @@
     }
   ],
   "connections": {
-    "When clicking ‘Execute workflow’": {
+    "When clicking Execute workflow": {
       "main": [
         [
           {
