@@ -1,0 +1,226 @@
+{
+  "id": "45kayzZIeusnWCHa",
+  "name": "Customer service agent",
+  "active": false,
+  "activeVersionId": null,
+  "createdAt": "2026-09-29T19:31:49.512Z",
+  "updatedAt": "2026-09-30T21:10:17.913Z",
+  "isArchived": false,
+  "versionId": "41c799de-f898-46e1-be13-fb4903f5b4a0",
+  "triggerCount": 0,
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a customer service agent. You have access to a customer database and an order database.\n\nWhen asked about customers, use the GetCustomers tool to look up their information.\nWhen asked about orders, prices, employees, or product categories, use the GetOrderData tool.\n\nBe concise and helpful. If the data does not contain what the user is asking for, say so. Do not make up information."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "5eafd712-c24a-4cb6-83f4-9321abac67a5",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        -304,
+        128
+      ],
+      "id": "5184ed41-05f0-4b51-9f57-7c35eb56b567",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "JyNWC5Gnd28rsTYZ",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        0,
+        0
+      ],
+      "id": "cb73474b-33f9-40d8-9a8a-d68dbd8fd945",
+      "name": "When chat message received",
+      "webhookId": "b5a2c5d3-5164-4134-9ca9-ce045451f8db"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        288,
+        240
+      ],
+      "id": "3ff84bf0-c079-407b-ab58-90e35ca66cab",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "url": "https://learn.app.n8n.cloud/webhook/courses/n8n-quickstart/order-tool",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-assessment-id",
+              "value": "06963ba7184c3a3c23ab298543eca5e2"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.5,
+      "position": [
+        608,
+        256
+      ],
+      "id": "7b1ff274-4ae1-46ee-95a7-c7cb91830bb7",
+      "name": "GetOrderData",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "tyghOJtuzKFTDorz",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "ldTjQIZnlXT3IVXv",
+          "mode": "list",
+          "cachedResultName": "customers",
+          "cachedResultUrl": "/projects/TgZejVKOlIvkpozD/datatables/ldTjQIZnlXT3IVXv"
+        }
+      },
+      "type": "n8n-nodes-base.dataTableTool",
+      "typeVersion": 1.1,
+      "position": [
+        432,
+        256
+      ],
+      "id": "02f5c119-82de-461a-813f-685dbde907ff",
+      "name": "GetCustomers"
+    },
+    {
+      "parameters": {
+        "model": "openrouter/free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        144,
+        240
+      ],
+      "id": "1c0367ac-02fb-4e83-a1fd-1bdd92136a96",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "LwXur1PFKqDTzpJK",
+          "name": "OpenRouter account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetOrderData": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetCustomers": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "nodeGroups": [],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
+  "shared": [
+    {
+      "role": "workflow:owner",
+      "workflowId": "45kayzZIeusnWCHa",
+      "projectId": "TgZejVKOlIvkpozD",
+      "createdAt": "2026-09-29T19:31:49.528Z",
+      "updatedAt": "2026-09-29T19:31:49.528Z"
+    }
+  ],
+  "activeVersion": null
+}
