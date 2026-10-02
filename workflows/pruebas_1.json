@@ -1,0 +1,861 @@
+{
+  "id": "w8sZ2qNyoUKgf71T",
+  "name": "PRUEBAS 1",
+  "active": false,
+  "activeVersionId": null,
+  "createdAt": "2026-10-01T15:02:07.130Z",
+  "updatedAt": "2026-10-01T22:36:20.886Z",
+  "isArchived": false,
+  "versionId": "0970413a-9f0a-4d39-9243-fbe9108b56cf",
+  "triggerCount": 0,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1056,
+        -640
+      ],
+      "id": "7969a68c-007d-4f86-8ce0-de3a8893de77",
+      "name": "When clicking Execute workflow"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b6c989c0-dddc-42ce-be97-6c4f4d6ee8ef",
+              "name": "orderID",
+              "value": "={{ $json.orderID }}",
+              "type": "string"
+            },
+            {
+              "id": "9ba3fc00-dbeb-4e56-a196-99a08cbf6463",
+              "name": "employeeName",
+              "value": "={{ $json.employeeName }}",
+              "type": "string"
+            },
+            {
+              "id": "7c89d75a-8a05-4b28-8858-e908b8d88ee1",
+              "name": "total",
+              "value": "={{ $json.total }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -512,
+        -112
+      ],
+      "id": "bd5d2c34-f49f-4cfc-8df0-6deb469d60c7",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "[\n  {\n    \"orderID\": \"001\",\n    \"employeeName\": \"Alice\",\n    \"dept\": \"Sales\",\n    \"total\": 1200,\n    \"country\": \"USA\"\n  },\n  {\n    \"orderID\": \"002\",\n    \"employeeName\": \"Bob\",\n    \"dept\": \"Marketing\",\n    \"total\": 1500,\n    \"country\": \"UK\"\n  },\n  {\n    \"orderID\": \"003\",\n    \"employeeName\": \"Charlie\",\n    \"dept\": \"HR\",\n    \"total\": 900,\n    \"country\": \"Canada\"\n  }\n]",
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -736,
+        -112
+      ],
+      "id": "007f2d7e-7535-4d13-9310-276f5dffcf18",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "url": "https://jsonplaceholder.typicode.com/users",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "_limit",
+              "value": "5"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -704,
+        -432
+      ],
+      "id": "78ee2893-c53f-4383-8e75-e3c61c8bcb08",
+      "name": "Get Users"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "=data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -256,
+        -432
+      ],
+      "id": "2200c5d1-6645-4774-a91c-1e9d7be6217f",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "include": "allOtherFields",
+        "options": {
+          "includeBinary": false
+        }
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        -432
+      ],
+      "id": "d0bfc4dd-a87f-4638-9031-71b39600e3a3",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1a1a1a1-b2b2-c3c3-d4d4-e5e5e5e5e5e5",
+              "name": "name",
+              "value": "={{$json.name}}",
+              "type": "string"
+            },
+            {
+              "id": "b2b2b2b2-c3c3-d4d4-e5e5-f6f6f6f6f6f6",
+              "name": "city",
+              "value": "={{$json.address.city}}",
+              "type": "string"
+            },
+            {
+              "id": "c3c3c3c3-d4d4-e5e5-f6f6-a7a7a7a7a7a7",
+              "name": "company",
+              "value": "={{$json.company.name}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -480,
+        -432
+      ],
+      "id": "70722815-2ab1-4877-8e45-6ee22299a3e9",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "ldTjQIZnlXT3IVXv",
+          "mode": "list",
+          "cachedResultName": "customers",
+          "cachedResultUrl": "/projects/TgZejVKOlIvkpozD/datatables/ldTjQIZnlXT3IVXv"
+        },
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -736,
+        96
+      ],
+      "id": "e0c5c629-e698-48f5-a2d3-a4c6d171821b",
+      "name": "Get row(s)"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "349368af-dbd7-4e96-b5b6-dd925ea7abb3",
+              "leftValue": "={{ $json.region }}",
+              "rightValue": "Asia",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        -512,
+        96
+      ],
+      "id": "2ca73efd-c73f-4899-9049-6ed253d770d4",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"orders\": [\n    { \"orderID\": 1, \"region\": \"Americas\", \"price\": 120 },\n    { \"orderID\": 2, \"region\": \"EMEA\", \"price\": 80 },\n    { \"orderID\": 3, \"region\": \"Americas\", \"price\": 200 }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -704,
+        416
+      ],
+      "id": "4ef9612c-6d8e-459d-879d-5406f1e3e179",
+      "name": "Sample Order Data",
+      "notesInFlow": true,
+      "notes": "Creates a sample dataset with 3 orders across Americas and EMEA regions"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f1e2d3c4-0001-4000-8000-000000000001",
+              "leftValue": "={{ $json.region }}",
+              "rightValue": "Americas",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        -256,
+        416
+      ],
+      "id": "d1a42826-d392-4a0d-86c3-e4aec67570fb",
+      "name": "Filter Americas",
+      "notesInFlow": true,
+      "notes": "Keeps only orders where region = Americas (2 of 3 pass)"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f1e2d3c4-0002-4000-8000-000000000002",
+              "name": "price_with_tax",
+              "value": "={{ $json.price * 1.1 }}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -368,
+        256
+      ],
+      "id": "fa6482df-f7d8-4c42-b115-bb5f5945e283",
+      "name": "Add 10% Tax",
+      "notesInFlow": true,
+      "notes": "Adds price_with_tax field using the expression: price * 1.1"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "sum",
+              "field": "price_with_tax"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        176,
+        416
+      ],
+      "id": "156f8343-eba4-4336-b740-0c7f54ee954d",
+      "name": "Total Price",
+      "notesInFlow": true,
+      "notes": "Sums price_with_tax across all remaining items = 352"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "orders",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        416
+      ],
+      "id": "6c9bdb5c-d2e2-4540-b264-1b0f820f3a13",
+      "name": "Split Out1",
+      "notesInFlow": true,
+      "notes": "Converts the orders array into 3 individual items"
+    },
+    {
+      "parameters": {
+        "url": "https://picsum.photos/400/300",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -992,
+        768
+      ],
+      "id": "e74352da-4f9e-4274-90a7-aa86d37acab6",
+      "name": "Fetch Sample Image"
+    },
+    {
+      "parameters": {
+        "url": "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -416,
+        864
+      ],
+      "id": "5e0ff84c-a00c-4eb3-84c2-2a3eebb83e79",
+      "name": "Fetch PDF"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -192,
+        864
+      ],
+      "id": "1e7220ef-3874-4d6a-958f-08ff99019bbe",
+      "name": "Extract Text from PDF"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        32,
+        864
+      ],
+      "id": "3a3d4626-3bd5-48e2-91de-7724da2f46eb",
+      "name": "Convert to CSV"
+    },
+    {
+      "parameters": {
+        "url": "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -656,
+        -640
+      ],
+      "id": "470b9fef-8bb5-4467-b7ff-e2f7b83788f5",
+      "name": "Fetch PDF1"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -432,
+        -640
+      ],
+      "id": "0131c8b0-e9c3-4d72-9341-0f84c6948803",
+      "name": "Extract Text from PDF1"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        -304,
+        -832
+      ],
+      "id": "aaa09e78-25e4-474e-ae80-5d015392dcb5",
+      "name": "Convert to Spreadsheet"
+    },
+    {
+      "parameters": {
+        "url": "https://jsonplaceholder.typicode.com/users",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "_limit",
+              "value": "5"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -752,
+        -832
+      ],
+      "id": "5ca2a95a-d619-4f9f-85be-c941f18cc226",
+      "name": "Get Users1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "aaa1",
+              "name": "name",
+              "value": "={{$json.name}}",
+              "type": "string"
+            },
+            {
+              "id": "aaa2",
+              "name": "email",
+              "value": "={{$json.email}}",
+              "type": "string"
+            },
+            {
+              "id": "aaa3",
+              "name": "city",
+              "value": "={{$json.address.city}}",
+              "type": "string"
+            },
+            {
+              "id": "aaa4",
+              "name": "company",
+              "value": "={{$json.company.name}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -528,
+        -832
+      ],
+      "id": "cd1c4380-3ce9-4a75-9175-063331422bce",
+      "name": "Edit Fields3"
+    }
+  ],
+  "connections": {
+    "When clicking Execute workflow": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Users",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Sample Order Data",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch Sample Image",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch PDF",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch PDF1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Users1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Users": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s)": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sample Order Data": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Americas": {
+      "main": [
+        [
+          {
+            "node": "Total Price",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add 10% Tax": {
+      "main": [
+        [
+          {
+            "node": "Filter Americas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Add 10% Tax",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch PDF": {
+      "main": [
+        [
+          {
+            "node": "Extract Text from PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Text from PDF": {
+      "main": [
+        [
+          {
+            "node": "Convert to CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch PDF1": {
+      "main": [
+        [
+          {
+            "node": "Extract Text from PDF1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Users1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Convert to Spreadsheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "nodeGroups": [],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "pinData": {
+    "Edit Fields": [
+      {
+        "json": {
+          "orderID": "001",
+          "employeeName": "Alice",
+          "dept": "Sales",
+          "total": 1200,
+          "country": "USA"
+        }
+      },
+      {
+        "json": {
+          "orderID": "002",
+          "employeeName": "Bob",
+          "dept": "Marketing",
+          "total": 1500,
+          "country": "UK"
+        }
+      },
+      {
+        "json": {
+          "orderID": "003",
+          "employeeName": "Charlie",
+          "dept": "HR",
+          "total": 900,
+          "country": "Canada"
+        }
+      }
+    ],
+    "Sample Order Data": [
+      {
+        "json": {
+          "orders": [
+            {
+              "orderID": 1,
+              "region": "Americas",
+              "price": 120
+            },
+            {
+              "orderID": 2,
+              "region": "EMEA",
+              "price": 80
+            },
+            {
+              "orderID": 3,
+              "region": "Americas",
+              "price": 200
+            }
+          ]
+        }
+      }
+    ],
+    "Split Out1": [
+      {
+        "json": {
+          "orderID": 1,
+          "region": "Americas",
+          "price": 120
+        }
+      },
+      {
+        "json": {
+          "orderID": 2,
+          "region": "EMEA",
+          "price": 80
+        }
+      },
+      {
+        "json": {
+          "orderID": 3,
+          "region": "Americas",
+          "price": 200
+        }
+      }
+    ],
+    "Filter Americas": [
+      {
+        "json": {
+          "orderID": 1,
+          "region": "Americas",
+          "price": 120
+        }
+      },
+      {
+        "json": {
+          "orderID": 3,
+          "region": "Americas",
+          "price": 200
+        }
+      }
+    ],
+    "Add 10% Tax": [
+      {
+        "json": {
+          "orderID": 1,
+          "region": "Americas",
+          "price": 120,
+          "price_with_tax": 132
+        }
+      },
+      {
+        "json": {
+          "orderID": 3,
+          "region": "Americas",
+          "price": 200,
+          "price_with_tax": 220
+        }
+      }
+    ],
+    "Total Price": [
+      {
+        "json": {
+          "price_with_tax": 352
+        }
+      }
+    ]
+  },
+  "meta": null,
+  "tags": [
+    {
+      "id": "zl2k4VbqkfmcGgtW",
+      "name": "Test",
+      "createdAt": "2026-09-30T21:14:24.779Z",
+      "updatedAt": "2026-09-30T21:14:24.779Z"
+    }
+  ],
+  "shared": [
+    {
+      "role": "workflow:owner",
+      "workflowId": "w8sZ2qNyoUKgf71T",
+      "projectId": "TgZejVKOlIvkpozD",
+      "createdAt": "2026-10-01T15:02:07.140Z",
+      "updatedAt": "2026-10-01T15:02:07.140Z"
+    }
+  ],
+  "activeVersion": null
+}
