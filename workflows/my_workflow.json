@@ -1,0 +1,146 @@
+{
+  "id": "UFCar3kD019Qxx5f",
+  "name": "My workflow",
+  "active": false,
+  "activeVersionId": null,
+  "createdAt": "2026-10-02T19:15:47.656Z",
+  "updatedAt": "2026-10-02T19:33:14.827Z",
+  "isArchived": false,
+  "versionId": "9f8df527-76e3-41d8-a570-1ed72fd97516",
+  "triggerCount": 0,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "7c9811af-febe-445a-a91a-0b6eced92036",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:5678/api/v1/workflows",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        176,
+        0
+      ],
+      "id": "a37a8367-6d7b-4fd7-9d6b-8bf4efcf5c03",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MYUGuILOutdyNiCk",
+          "name": "Header Auth account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Acessa a lista de fluxos retornada pela API do n8n\nconst workflows = $input.first().json.data; \n\n// Mapeia cada fluxo gerando um item independente para o nó do GitHub\nreturn workflows.map(wf => {\n  // Limpa o nome do fluxo para evitar caracteres inválidos no sistema de arquivos\n  const safeName = wf.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();\n  \n  return {\n    json: {\n      fileName: `workflows/${safeName}.json`,\n      fileContent: JSON.stringify(wf, null, 2) // Transforma o JSON em texto formatado\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        0
+      ],
+      "id": "37e3c31a-20e4-4035-b324-0b76aa49f10f",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "rafaeljgomezg",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "backup_N8N",
+          "mode": "name"
+        },
+        "filePath": "/"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        624,
+        0
+      ],
+      "id": "f2b73a25-3eb2-46c8-bae1-e4d3a7f2efcc",
+      "name": "Create a file",
+      "webhookId": "1ca075af-4926-46eb-b4e7-cdd0dc97c603",
+      "credentials": {
+        "githubApi": {
+          "id": "EGUeVGSPTxATrOB6",
+          "name": "GitHub account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Create a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "nodeGroups": [],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
+  "shared": [
+    {
+      "role": "workflow:owner",
+      "workflowId": "UFCar3kD019Qxx5f",
+      "projectId": "TgZejVKOlIvkpozD",
+      "createdAt": "2026-10-02T19:15:47.667Z",
+      "updatedAt": "2026-10-02T19:15:47.667Z"
+    }
+  ],
+  "activeVersion": null
+}
