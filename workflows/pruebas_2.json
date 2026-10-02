@@ -1,0 +1,207 @@
+{
+  "id": "0ikxaQ1sR9wboYAi",
+  "name": "PRUEBAS 2",
+  "active": false,
+  "activeVersionId": null,
+  "createdAt": "2026-10-01T15:54:28.427Z",
+  "updatedAt": "2026-10-01T16:03:43.189Z",
+  "isArchived": false,
+  "versionId": "6add6072-61a1-4a0b-8f0b-a2031d69d718",
+  "triggerCount": 0,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -768,
+        -32
+      ],
+      "id": "ddc50556-cd7d-4364-a99d-55fb0749fca5",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"orders\": [\n    { \"orderID\": 101, \"customer\": \"Alice\", \"total\": 85, \"source\": \"web\" },\n    { \"orderID\": 102, \"customer\": \"Bob\", \"total\": 120, \"source\": \"web\" }\n  ]\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -448,
+        -208
+      ],
+      "id": "37c0270b-47cd-4a75-9840-7d0c922cd114",
+      "name": "Online Form Orders"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "orders",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        -208
+      ],
+      "id": "d78f16da-88db-4404-ac1d-9a1dbeff1d62",
+      "name": "Split Online Orders"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"orders\": [\n    { \"orderID\": 201, \"customer\": \"Charlie\", \"total\": 200, \"source\": \"api\" },\n    { \"orderID\": 202, \"customer\": \"David\", \"total\": 65, \"source\": \"api\" }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -448,
+        96
+      ],
+      "id": "01126d97-1fd9-4f6e-bbe1-a13331896484",
+      "name": "API Orders"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "orders",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        96
+      ],
+      "id": "6ca41d4f-c38c-4aab-9df3-5bdae1129643",
+      "name": "Split API Orders"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        144,
+        -64
+      ],
+      "id": "33a72850-e842-4bbf-9faf-443c9af63bbf",
+      "name": "Merge All Ordesr"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "allOrders",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        368,
+        -64
+      ],
+      "id": "bd2f2c9d-5168-4ae8-a28c-1d4899dd0d5c",
+      "name": "Collect Into Array"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Online Form Orders",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "API Orders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Online Form Orders": {
+      "main": [
+        [
+          {
+            "node": "Split Online Orders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Online Orders": {
+      "main": [
+        [
+          {
+            "node": "Merge All Ordesr",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "API Orders": {
+      "main": [
+        [
+          {
+            "node": "Split API Orders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split API Orders": {
+      "main": [
+        [
+          {
+            "node": "Merge All Ordesr",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge All Ordesr": {
+      "main": [
+        [
+          {
+            "node": "Collect Into Array",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "nodeGroups": [],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "pinData": {},
+  "meta": null,
+  "tags": [
+    {
+      "id": "zl2k4VbqkfmcGgtW",
+      "name": "Test",
+      "createdAt": "2026-09-30T21:14:24.779Z",
+      "updatedAt": "2026-09-30T21:14:24.779Z"
+    }
+  ],
+  "shared": [
+    {
+      "role": "workflow:owner",
+      "workflowId": "0ikxaQ1sR9wboYAi",
+      "projectId": "TgZejVKOlIvkpozD",
+      "createdAt": "2026-10-01T15:54:28.440Z",
+      "updatedAt": "2026-10-01T15:54:28.440Z"
+    }
+  ],
+  "activeVersion": null
+}
