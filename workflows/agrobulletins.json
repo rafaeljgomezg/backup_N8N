@@ -1,0 +1,1900 @@
+{
+  "id": "zpTH22dHq4k7h1kv",
+  "name": "AgroBulletins",
+  "active": true,
+  "activeVersionId": "5a46c786-cd18-47e5-bf1e-f0053241f89e",
+  "createdAt": "2026-10-04T19:42:39.267Z",
+  "updatedAt": "2026-10-15T16:10:27.598Z",
+  "isArchived": false,
+  "versionId": "5a46c786-cd18-47e5-bf1e-f0053241f89e",
+  "triggerCount": 1,
+  "nodes": [
+    {
+      "parameters": {
+        "url": "=https://economia.awesomeapi.com.br/json/last/USD-BRL",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -3904,
+        -1056
+      ],
+      "id": "d8f8bc6e-52f0-4ba1-bea8-46b0dd2b81dc",
+      "name": "Cotizacion Dolar BCB"
+    },
+    {
+      "parameters": {
+        "url": "https://api.openweathermap.org/data/2.5/weather?q=Cascavel,BR&units=metric&lang=pt_br&appid=72b8fd1cd284bddef119717fd6f9e4d7",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -3904,
+        -864
+      ],
+      "id": "10a6fcd9-b370-49a7-9e82-cc668bca301e",
+      "name": "Clima Cascavel"
+    },
+    {
+      "parameters": {
+        "url": "https://www.canalrural.com.br/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -3904,
+        -656
+      ],
+      "id": "cd32e7de-ecaa-456e-bf70-fa9a2b578475",
+      "name": "CanalRural"
+    },
+    {
+      "parameters": {
+        "url": "https://agroemdia.com.br/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -3904,
+        -496
+      ],
+      "id": "83180029-d2de-4a14-a0b1-5256664acd46",
+      "name": "agroemdia"
+    },
+    {
+      "parameters": {
+        "url": "https://g1.globo.com/rss/g1/economia/agronegocios/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -3904,
+        -352
+      ],
+      "id": "fc2d95fb-7b13-429c-8420-54e3465379c6",
+      "name": "globo"
+    },
+    {
+      "parameters": {
+        "numberInputs": 6
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -3296,
+        -688
+      ],
+      "id": "dbc6dcf5-3554-46c0-900a-0dba7b3eb76c",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "model": "openrouter/free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -1904,
+        -1360
+      ],
+      "id": "edc11779-3bc5-4203-93ca-8cd22d045277",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "LwXur1PFKqDTzpJK",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -3088,
+        -624
+      ],
+      "id": "9a4baaf0-603b-4b35-ba2f-da586b483777",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "maxItems": 3
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -3680,
+        -656
+      ],
+      "id": "18e213bd-bddf-42a8-ad25-a76746546bed",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "maxItems": 3
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -3680,
+        -496
+      ],
+      "id": "ae06d44b-f2a0-48e3-93f4-655dc1c781e4",
+      "name": "Limit1"
+    },
+    {
+      "parameters": {
+        "maxItems": 3
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -3680,
+        -352
+      ],
+      "id": "f0909dd2-5184-4d83-a4bc-8f3e6859dad6",
+      "name": "Limit2"
+    },
+    {
+      "parameters": {
+        "maxItems": 3
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -3680,
+        -176
+      ],
+      "id": "e6535f8c-235e-496d-9116-6115a55d90d9",
+      "name": "Limit3"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "usuarios",
+        "limit": 5000,
+        "filters": {
+          "conditions": []
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -3984,
+        -1584
+      ],
+      "id": "7679311d-b157-43bd-b02b-da68bd9a1d1d",
+      "name": "Get many rows",
+      "credentials": {
+        "supabaseApi": {
+          "id": "y8wtjmf4bPYHYS7L",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -2448,
+        -1408
+      ],
+      "id": "23e804ad-cb38-4b97-8138-418efd111a5e",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "7f7daf61-e0f0-468c-acb3-c9d7d0304245",
+              "leftValue": "={{ $json.plan }}",
+              "rightValue": "PREMIUM",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -2352,
+        -1216
+      ],
+      "id": "62edb510-3483-4536-810c-b5a56a271e6a",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "model": "openrouter/free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -1696,
+        -912
+      ],
+      "id": "39e6ec65-5ec7-409f-8600-08f7e84d5a5d",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "LwXur1PFKqDTzpJK",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Aggregate').first().json.data.map(item => item.title + \": \" + (item.description || item.contentSnippet || \"\")).join('\\n\\n') }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "Você é um assistente executivo do agronegócio em Cascavel, Paraná. Com base nos dados fornecidos, crie um boletim matutino resumido (versão Gratuita).  REGRAS OBRIGATÓRIAS DE CONTEÚDO E FORMATO: 1. Retorne EXCLUSIVAMENTE código HTML válido. Não inclua blocos de código markdown (```html). 2. Selecione APENAS as 2 manchetes mais importantes e de maior impacto para os produtores de Cascavel. 3. Mantenha o texto extremamente direto e conciso. 4. Adicione obrigatoriamente a caixa de conversão (CTA) ao final para o plano PREMIUM.  ESTRUTURA HTML ESPERADA: <div style=\"font-family: Arial, sans-serif; color: #333333; max-width: 600px; margin: 0 auto; line-height: 1.6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 25px; background-color: #ffffff;\">      <!-- Cabeçalho -->   <div style=\"border-bottom: 2px solid #4caf50; padding-bottom: 12px; margin-bottom: 20px;\">     <h2 style=\"color: #2e7d32; margin: 0; font-size: 20px;\"><> Resumo Agro Cascavel <span style=\"font-size: 12px; background-color: #e8f5e9; color: #2e7d32; padding: 3px 8px; border-radius: 12px; vertical-align: middle;\">FREE</span></h2>     <p style=\"color: #666666; font-size: 13px; margin: 5px 0 0 0;\">As 2 principais notícias do agronegócio hoje</p>   </div>    <p style=\"font-size: 14px;\"><strong>Bom dia, produtor!</strong> Aqui estão os destaques mais relevantes desta manhã:</p>    <!-- Lista com as 2 manchetes -->   <ul style=\"padding-left: 20px; margin: 15px 0; font-size: 14px;\">     <!-- Insira aqui APENAS 2 <li> bem resumidos com os destaques -->   </ul>    <!-- Banner de Conversão / Call-To-Action (CTA) -->   <div style=\"background-color: #fff8e1; border: 1px solid #ffe082; border-radius: 6px; padding: 18px; margin-top: 25px; text-align: center;\">     <p style=\"margin: 0 0 10px 0; font-size: 14px; color: #795548; font-weight: bold;\">       = Quer receber a análise completa do mercado, cotação do Dólar PTAX, clima detalhado e tendências de grãos?     </p>     <a href=\"[https://mpago.la/tu_link](https://mpago.la/tu_link)\" style=\"display: inline-block; background-color: #2e7d32; color: #ffffff; text-decoration: none; font-weight: bold; padding: 10px 20px; border-radius: 4px; font-size: 14px; margin-top: 5px;\">       Assinar Plan PREMIUM por R$ 49/mês     </a>   </div>    <!-- Rodapé -->   <div style=\"margin-top: 25px; border-top: 1px solid #eee; padding-top: 15px; font-size: 11px; color: #888888; text-align: center;\">     Resumo Agro Cascavel " Informativo Diário   </div>  </div>"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -1920,
+        -1072
+      ],
+      "id": "277b0bda-fcd0-458f-8d62-59e5caf82118",
+      "name": "PLAN FREE"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Aggregate').first().json.data.map(item => item.title + \": \" + (item.description || item.contentSnippet || \"\")).join('\\n\\n') }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "Você é um consultor executivo do agronegócio em Cascavel, Paraná. Com base nos dados fornecidos, redija o boletim diário \"Agro Cascavel Executive\".  REGRAS OBRIGATÓRIAS DE FORMATO: 1. Retorne EXCLUSIVAMENTE código HTML válido. Não use blocos de código markdown (```html). 2. Inclua uma saudação curta no início e uma despedida profissional no final. 3. Estilize as seções diretamente com CSS inline para garantir um visual elegante no Gmail.  ESTRUTURA HTML ESPERADA: <div style=\"font-family: Arial, sans-serif; color: #333333; max-width: 650px; margin: 0 auto; line-height: 1.6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 25px; background-color: #ffffff;\">      <div style=\"border-bottom: 2px solid #2e7d32; padding-bottom: 12px; margin-bottom: 20px;\">     <h2 style=\"color: #2e7d32; margin: 0; font-size: 22px;\"><> Agro Cascavel - Boletim Executivo</h2>     <p style=\"color: #666666; font-size: 13px; margin: 5px 0 0 0;\">Análise diária para tomada de decisão no campo</p>   </div>    <p style=\"font-size: 15px;\"><strong>Bom dia, produtor!</strong> Confira as informações estratégicas para hoje:</p>    <h3 style=\"color: #1b5e20; background-color: #f1f8e9; padding: 6px 10px; border-left: 4px solid #2e7d32; font-size: 16px; margin-top: 20px;\">=È Mercado & Cotações</h3>   <ul style=\"padding-left: 20px; margin: 10px 0;\">     <!-- Itens de Mercado em <li> -->   </ul>    <h3 style=\"color: #01579b; background-color: #e1f5fe; padding: 6px 10px; border-left: 4px solid #0288d1; font-size: 16px; margin-top: 20px;\"><Û Política & Economia</h3>"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -1904,
+        -1568
+      ],
+      "id": "488fc9d5-3ae5-42c5-8090-135f4faf617f",
+      "name": "PLAN PREMIUM"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -2880,
+        -928
+      ],
+      "id": "a3e03b44-5c85-4a9f-b461-f4a5c51338bd",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "fromEmail": "rafaeljgomezg@gmail.com",
+        "toEmail": "={{ $('If').item.json.email }}",
+        "subject": "={{ $json.plan === 'PREMIUM' ? '<> Boletim Executivo Agro Cascavel - Premium' : '<> Resumo Agro Cascavel' }}",
+        "html": "={{ $json.text.replace(/\\\\n/g, '<br>').replace(/\\*\\*(.*?)\\*\\*/g, '<b>$1</b>') }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        -1536,
+        -1568
+      ],
+      "id": "9a0aa6cc-8928-4b94-8dab-e89b7563eb5f",
+      "name": "Send an Email",
+      "webhookId": "45481843-fe44-4f1f-b8bc-560b25cc2097",
+      "credentials": {
+        "smtp": {
+          "id": "8sJSX0mI8cnOgkel",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "rafaeljgomezg@gmail.com",
+        "toEmail": "={{ $('If').item.json.email }}",
+        "subject": "={{ $json.plan === 'PREMIUM' ? '<> Boletim Executivo Agro Cascavel - Premium' : '<> Resumo Agro Cascavel' }}",
+        "html": "={{ $json.text.replace(/\\\\n/g, '<br>').replace(/\\*\\*(.*?)\\*\\*/g, '<b>$1</b>') }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        -1536,
+        -1072
+      ],
+      "id": "137e0839-e411-4427-b8d7-87429d17deb7",
+      "name": "Send an Email1",
+      "webhookId": "45481843-fe44-4f1f-b8bc-560b25cc2097",
+      "credentials": {
+        "smtp": {
+          "id": "8sJSX0mI8cnOgkel",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openrouter/free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -2864,
+        -288
+      ],
+      "id": "a2c916eb-f55f-489a-8060-d4c2ce09d92b",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "LwXur1PFKqDTzpJK",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Capturar datos del nodo de entrada con valores por defecto\nconst inputJson = $input.first()?.json || {};\n\n// 2. Extraer y formatear la Cotización del Dólar PTAX (a 4 decimales)\nlet dolarRaw = inputJson.cotizacion_ptax \n  || inputJson.dolar;\n\n// Si no viene en el input directo, busca en el nodo de la cotización\ntry {\n  if (!dolarRaw && typeof $('Cotizacion Dolar BCB') !== 'undefined') {\n    const bcbJson = $('Cotizacion Dolar BCB').first()?.json;\n    // Extrae de AwesomeAPI (USDBRL.bid) o del formato antiguo BCB\n    dolarRaw = bcbJson?.USDBRL?.bid || bcbJson?.value?.[0]?.cotacaoVenda;\n  }\n} catch (e) {\n  // Ignora si el nodo no existe en la ejecución actual\n}\n\n// Si sigue sin encontrarse, intenta extraerlo del texto generado por la IA\nif (!dolarRaw && inputJson.text) {\n  const matchDolar = inputJson.text.match(/R\\$\\s*([\\d[.,]+)/i);\n  if (matchDolar) {\n    dolarRaw = matchDolar[1].replace(',', '.');\n  }\n}\n\nconst dolarNum = parseFloat(dolarRaw);\nconst dolar = !isNaN(dolarNum) ? dolarNum.toFixed(4).replace('.', ',') : '4,9935';\n\n// 3. Extraer y formatear el Clima\nlet tempRaw = inputJson.temperatura;\nlet condRaw = inputJson.condicion_clima;\n\ntry {\n  if (!tempRaw && typeof $('Clima Cascavel') !== 'undefined') {\n    tempRaw = $('Clima Cascavel').first()?.json?.main?.temp;\n    condRaw = $('Clima Cascavel').first()?.json?.weather?.[0]?.description;\n  }\n} catch (e) {\n  // Ignora si el nodo no existe en la ejecución actual\n}\n\nconst tempNum = parseFloat(tempRaw);\nconst clima = !isNaN(tempNum) ? Math.round(tempNum) : '20';\nconst condicion = condRaw || 'chuva leve';\n\n// 4. Extraer y limpiar el Titular de la Noticia desde el texto de la IA\nlet textoIA = '';\ntry {\n  if (typeof $('Instagram Mensaje') !== 'undefined') {\n    textoIA = $('Instagram Mensaje').first()?.json?.text || '';\n  }\n} catch (e) {\n  // Ignora si el nodo no existe\n}\n\nif (!textoIA && inputJson.text) {\n  textoIA = inputJson.text;\n}\n\nlet primerRenglon = textoIA.split('\\n').find(linea => linea.trim().length > 0) || '';\nprimerRenglon = primerRenglon.replace(/[*#]/g, '').trim();\n\nconst titulo = inputJson.resumen_noticia \n  || (primerRenglon.length > 5 ? primerRenglon : null)\n  || 'Dólar PTAX e Clima: Tudo sobre o Agro hoje!';\n\n// 5. Imagen de Fondo Dinámica\nlet palabraClave = inputJson.keyword || '';\n\nif (!palabraClave) {\n  const tituloMin = titulo.toLowerCase();\n  if (tituloMin.includes('laranja') || tituloMin.includes('suco') || tituloMin.includes('citros')) palabraClave = 'citrus';\n  else if (tituloMin.includes('soja')) palabraClave = 'soybean';\n  else if (tituloMin.includes('milho')) palabraClave = 'cornfield';\n  else if (tituloMin.includes('boi') || tituloMin.includes('carne') || tituloMin.includes('gado')) palabraClave = 'cattle';\n  else if (tituloMin.includes('trator') || tituloMin.includes('maquina')) palabraClave = 'tractor';\n  else if (tituloMin.includes('café')) palabraClave = 'coffee';\n  else palabraClave = 'agriculture';\n}\n\n// URL de Picsum combinando el tema de la noticia con una variación aleatoria por ejecución\nconst fotoFondo = inputJson.imagen_gemini_url \n  || `https://picsum.photos/seed/${encodeURIComponent(palabraClave + Date.now())}/1080/1080`;\n\nconst logoUrl = 'https://i.ibb.co/h1HcGsfX/agrotech-logo.jpg'; \nconst fecha = new Date().toLocaleDateString('pt-BR');\n\n// 6. Construcción del HTML\nconst htmlContent = `\n<!DOCTYPE html>\n<html lang=\"pt\">\n<head>\n<meta charset=\"UTF-8\">\n<style>\n  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }\n  body { width: 1080px; height: 1080px; background-color: #064E3B; position: relative; overflow: hidden; }\n  \n  /* Fondo con overlay */\n  .bg-image {\n    position: absolute; top: 0; left: 0; width: 1080px; height: 1080px;\n    background-image: url('${fotoFondo}'); background-size: cover; background-position: center;\n  }\n  .overlay {\n    position: absolute; top: 0; left: 0; width: 1080px; height: 1080px;\n    background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(6,78,59,0.85) 100%);\n  }\n\n  /* Contenido */\n  .container {\n    position: relative; z-index: 10; width: 1080px; height: 1080px;\n    padding: 60px; display: flex; flex-direction: column; justify-content: space-between;\n  }\n\n  /* Header */\n  .header {\n    background: #FFFFFF; border-radius: 20px; padding: 20px 40px;\n    display: flex; justify-content: space-between; align-items: center;\n    box-shadow: 0 10px 25px rgba(0,0,0,0.2);\n  }\n  .logo { height: 80px; object-fit: contain; }\n  .location-badge { color: #22B182; font-weight: 700; font-size: 22px; }\n\n  /* Body / Noticias */\n  .main-content { margin-top: auto; margin-bottom: auto; }\n  .tag {\n    display: inline-block; background-color: #22B182; color: #FFFFFF;\n    font-weight: 800; font-size: 18px; padding: 10px 20px; border-radius: 50px;\n    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 25px;\n  }\n  .title {\n    color: #FFFFFF; font-size: 48px; font-weight: 800; line-height: 1.25;\n    text-shadow: 0 4px 10px rgba(0,0,0,0.5);\n  }\n\n  /* Footer / Cards de Indicadores */\n  .footer { display: flex; gap: 20px; }\n  .card {\n    flex: 1; background: rgba(15, 23, 42, 0.85); border: 2px solid #22B182;\n    border-radius: 16px; padding: 20px; color: #FFFFFF; text-align: center;\n    backdrop-filter: blur(10px);\n  }\n  .card-label { font-size: 16px; color: #94A3B8; text-transform: uppercase; font-weight: 600; }\n  .card-value { font-size: 28px; font-weight: 800; color: #FFFFFF; margin-top: 5px; }\n</style>\n</head>\n<body>\n  <div class=\"bg-image\"></div>\n  <div class=\"overlay\"></div>\n  <div class=\"container\">\n    <div class=\"header\">\n      <img src=\"${logoUrl}\" class=\"logo\" alt=\"Agrotech\" onerror=\"this.style.display='none'\">\n      <div class=\"location-badge\">Cascavel, PR " ${fecha}</div>\n    </div>\n    \n    <div class=\"main-content\">\n      <div class=\"tag\">Boletim DaaS</div>\n      <h1 class=\"title\">${titulo}</h1>\n    </div>\n\n    <div class=\"footer\">\n      <div class=\"card\">\n        <div class=\"card-label\">Dólar PTAX</div>\n        <div class=\"card-value\">R$ ${dolar}</div>\n      </div>\n      <div class=\"card\">\n        <div class=\"card-label\">Clima Cascavel</div>\n        <div class=\"card-value\">${clima}°C ${condicion}</div>\n      </div>\n    </div>\n  </div>\n</body>\n</html>\n`;\n\nreturn [{ json: { html: htmlContent } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2528,
+        -320
+      ],
+      "id": "6ee2ce49-dc64-4ddb-935a-d77cfd2f4494",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v22.0/17841476682634798/media",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image_url",
+              "value": "={{ $json.url }}.png"
+            },
+            {
+              "name": "caption",
+              "value": "={{ $('Instagram Mensaje').item.json.text.replace(/\\\\n/g, '\\n') }}   "
+            },
+            {
+              "name": "access_token",
+              "value": "EAAPWvvJZA8c8BShnDZAQFbis3FbIFGAM27sZCw0ayePZCBkoZAchZAkNV4ZAZAMg4JTNZCkcfZANIxDiJJFy6cpHDMZA9n4ZCS22xEVZCcZBSgP2u4mj1u8Fbl9282W0wWTJpaVWlhUiw1CMBL1JK5cyQngaOODXRRo4drsmxhYuxduORyIjAwwbfJ0ZBifdoPV3DacXgZDZD"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -2048,
+        -400
+      ],
+      "id": "5c543189-c4da-490c-8db1-8bad8afa8762",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v22.0/17841476682634798/media_publish",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "creation_id",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "name": "access_token",
+              "value": "EAAPWvvJZA8c8BShnDZAQFbis3FbIFGAM27sZCw0ayePZCBkoZAchZAkNV4ZAZAMg4JTNZCkcfZANIxDiJJFy6cpHDMZA9n4ZCS22xEVZCcZBSgP2u4mj1u8Fbl9282W0wWTJpaVWlhUiw1CMBL1JK5cyQngaOODXRRo4drsmxhYuxduORyIjAwwbfJ0ZBifdoPV3DacXgZDZD"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -1600,
+        -400
+      ],
+      "id": "8d2b5a6d-d4b4-4c76-9c30-f8523ad893c6",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um jornalista agrícola imparcial de Cascavel, PR. Crie uma legenda estritamente técnica e informativa para o Instagram com base nestes dados reais de mercado:\n\n- Dólar PTAX: R${{ $('Cotizacion Dolar BCB').item.json.USDBRL.bid }}\n- Clima em Cascavel: {{ $('Clima Cascavel').first().json.main.temp }}°C\n\nNotícias do dia:\n{{ JSON.stringify($json.data) }}\n\nREGRAS OBRIGATÓRIAS:\n1. Escolha a notícia mais relevante para o agronegócio e crie um TÍTULO principal na 1ª linha de até 8 palavras (sem asteriscos, sem hashtag #, apenas texto limpo).\n2. Escreva 3 destaques objetivos e estritamente técnicos com dados econômicos e agrícolas reais fornecidos acima.\n3. Mantenha um tom estritamente jornalístico, neutro e focado em fatos de mercado e produção rural.\n4. Gere de 3 a 5 hashtags estratégicas ao final da legenda.",
+        "messages": {
+          "messageValues": []
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -2880,
+        -464
+      ],
+      "id": "7961443a-13b1-4bf5-9078-2541c6d77e82",
+      "name": "Instagram Mensaje"
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1824,
+        -400
+      ],
+      "id": "6f8ddef8-7a60-4f19-a640-c529227815d7",
+      "name": "Wait",
+      "webhookId": "81466fab-12e8-4f70-b062-27a9b7479387"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 12,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -4480,
+        -640
+      ],
+      "id": "425e5d00-d727-4a21-9661-38fb3585fce2",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://www.noticiasagricolas.com.br/podcasts.rss",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -3904,
+        -176
+      ],
+      "id": "1d5ce26d-2475-4122-a3b5-d8e1af4a8361",
+      "name": "NoticiasAgricolas"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://hcti.io/v1/image",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "html",
+              "value": "={{ $json.html }}"
+            },
+            {
+              "name": "viewport_width",
+              "value": "1080"
+            },
+            {
+              "name": "viewport_height",
+              "value": "1080"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -2224,
+        -384
+      ],
+      "id": "25407312-5811-43d8-a3e5-7ed416ac6570",
+      "name": "HTMLTOIMG",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "wIw87Cn3FZ9MXA2O",
+          "name": "HTMLTOIMG CREDENTIAL"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Cotizacion Dolar BCB": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clima Cascavel": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "CanalRural": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "agroemdia": {
+      "main": [
+        [
+          {
+            "node": "Limit1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "globo": {
+      "main": [
+        [
+          {
+            "node": "Limit2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "PLAN PREMIUM",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Instagram Mensaje",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Limit1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Limit2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Limit3": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 5
+          }
+        ]
+      ]
+    },
+    "Get many rows": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "PLAN PREMIUM",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "PLAN FREE",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "PLAN FREE",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PLAN PREMIUM": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PLAN FREE": {
+      "main": [
+        [
+          {
+            "node": "Send an Email1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Instagram Mensaje",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTMLTOIMG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Instagram Mensaje": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cotizacion Dolar BCB",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Clima Cascavel",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "CanalRural",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "agroemdia",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "globo",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get many rows",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "NoticiasAgricolas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NoticiasAgricolas": {
+      "main": [
+        [
+          {
+            "node": "Limit3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTMLTOIMG": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "nodeGroups": [],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "timezone": "America/Sao_Paulo",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "vdZzgMGEWXkNeQqY"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": [
+        null
+      ],
+      "recurrenceRuleSignatures": [
+        null
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
+  "shared": [
+    {
+      "role": "workflow:owner",
+      "workflowId": "zpTH22dHq4k7h1kv",
+      "projectId": "TgZejVKOlIvkpozD",
+      "createdAt": "2026-10-04T19:42:39.280Z",
+      "updatedAt": "2026-10-04T19:42:39.280Z"
+    }
+  ],
+  "activeVersion": {
+    "versionId": "5a46c786-cd18-47e5-bf1e-f0053241f89e",
+    "workflowId": "zpTH22dHq4k7h1kv",
+    "nodes": [
+      {
+        "parameters": {
+          "url": "=https://economia.awesomeapi.com.br/json/last/USD-BRL",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          -3904,
+          -1056
+        ],
+        "id": "d8f8bc6e-52f0-4ba1-bea8-46b0dd2b81dc",
+        "name": "Cotizacion Dolar BCB"
+      },
+      {
+        "parameters": {
+          "url": "https://api.openweathermap.org/data/2.5/weather?q=Cascavel,BR&units=metric&lang=pt_br&appid=72b8fd1cd284bddef119717fd6f9e4d7",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          -3904,
+          -864
+        ],
+        "id": "10a6fcd9-b370-49a7-9e82-cc668bca301e",
+        "name": "Clima Cascavel"
+      },
+      {
+        "parameters": {
+          "url": "https://www.canalrural.com.br/feed/",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.rssFeedRead",
+        "typeVersion": 1.2,
+        "position": [
+          -3904,
+          -656
+        ],
+        "id": "cd32e7de-ecaa-456e-bf70-fa9a2b578475",
+        "name": "CanalRural"
+      },
+      {
+        "parameters": {
+          "url": "https://agroemdia.com.br/feed/",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.rssFeedRead",
+        "typeVersion": 1.2,
+        "position": [
+          -3904,
+          -496
+        ],
+        "id": "83180029-d2de-4a14-a0b1-5256664acd46",
+        "name": "agroemdia"
+      },
+      {
+        "parameters": {
+          "url": "https://g1.globo.com/rss/g1/economia/agronegocios/",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.rssFeedRead",
+        "typeVersion": 1.2,
+        "position": [
+          -3904,
+          -352
+        ],
+        "id": "fc2d95fb-7b13-429c-8420-54e3465379c6",
+        "name": "globo"
+      },
+      {
+        "parameters": {
+          "numberInputs": 6
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          -3296,
+          -688
+        ],
+        "id": "dbc6dcf5-3554-46c0-900a-0dba7b3eb76c",
+        "name": "Merge"
+      },
+      {
+        "parameters": {
+          "model": "openrouter/free",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+        "typeVersion": 1,
+        "position": [
+          -1904,
+          -1360
+        ],
+        "id": "edc11779-3bc5-4203-93ca-8cd22d045277",
+        "name": "OpenRouter Chat Model",
+        "credentials": {
+          "openRouterApi": {
+            "id": "LwXur1PFKqDTzpJK",
+            "name": "OpenRouter account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          -3088,
+          -624
+        ],
+        "id": "9a4baaf0-603b-4b35-ba2f-da586b483777",
+        "name": "Aggregate"
+      },
+      {
+        "parameters": {
+          "maxItems": 3
+        },
+        "type": "n8n-nodes-base.limit",
+        "typeVersion": 1,
+        "position": [
+          -3680,
+          -656
+        ],
+        "id": "18e213bd-bddf-42a8-ad25-a76746546bed",
+        "name": "Limit"
+      },
+      {
+        "parameters": {
+          "maxItems": 3
+        },
+        "type": "n8n-nodes-base.limit",
+        "typeVersion": 1,
+        "position": [
+          -3680,
+          -496
+        ],
+        "id": "ae06d44b-f2a0-48e3-93f4-655dc1c781e4",
+        "name": "Limit1"
+      },
+      {
+        "parameters": {
+          "maxItems": 3
+        },
+        "type": "n8n-nodes-base.limit",
+        "typeVersion": 1,
+        "position": [
+          -3680,
+          -352
+        ],
+        "id": "f0909dd2-5184-4d83-a4bc-8f3e6859dad6",
+        "name": "Limit2"
+      },
+      {
+        "parameters": {
+          "maxItems": 3
+        },
+        "type": "n8n-nodes-base.limit",
+        "typeVersion": 1,
+        "position": [
+          -3680,
+          -176
+        ],
+        "id": "e6535f8c-235e-496d-9116-6115a55d90d9",
+        "name": "Limit3"
+      },
+      {
+        "parameters": {
+          "operation": "getAll",
+          "tableId": "usuarios",
+          "limit": 5000,
+          "filters": {
+            "conditions": []
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          -3984,
+          -1584
+        ],
+        "id": "7679311d-b157-43bd-b02b-da68bd9a1d1d",
+        "name": "Get many rows",
+        "credentials": {
+          "supabaseApi": {
+            "id": "y8wtjmf4bPYHYS7L",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          -2448,
+          -1408
+        ],
+        "id": "23e804ad-cb38-4b97-8138-418efd111a5e",
+        "name": "Loop Over Items"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "7f7daf61-e0f0-468c-acb3-c9d7d0304245",
+                "leftValue": "={{ $json.plan }}",
+                "rightValue": "PREMIUM",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          -2352,
+          -1216
+        ],
+        "id": "62edb510-3483-4536-810c-b5a56a271e6a",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "model": "openrouter/free",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+        "typeVersion": 1,
+        "position": [
+          -1696,
+          -912
+        ],
+        "id": "39e6ec65-5ec7-409f-8600-08f7e84d5a5d",
+        "name": "OpenRouter Chat Model1",
+        "credentials": {
+          "openRouterApi": {
+            "id": "LwXur1PFKqDTzpJK",
+            "name": "OpenRouter account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $('Aggregate').first().json.data.map(item => item.title + \": \" + (item.description || item.contentSnippet || \"\")).join('\\n\\n') }}",
+          "messages": {
+            "messageValues": [
+              {
+                "message": "Você é um assistente executivo do agronegócio em Cascavel, Paraná. Com base nos dados fornecidos, crie um boletim matutino resumido (versão Gratuita).  REGRAS OBRIGATÓRIAS DE CONTEÚDO E FORMATO: 1. Retorne EXCLUSIVAMENTE código HTML válido. Não inclua blocos de código markdown (```html). 2. Selecione APENAS as 2 manchetes mais importantes e de maior impacto para os produtores de Cascavel. 3. Mantenha o texto extremamente direto e conciso. 4. Adicione obrigatoriamente a caixa de conversão (CTA) ao final para o plano PREMIUM.  ESTRUTURA HTML ESPERADA: <div style=\"font-family: Arial, sans-serif; color: #333333; max-width: 600px; margin: 0 auto; line-height: 1.6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 25px; background-color: #ffffff;\">      <!-- Cabeçalho -->   <div style=\"border-bottom: 2px solid #4caf50; padding-bottom: 12px; margin-bottom: 20px;\">     <h2 style=\"color: #2e7d32; margin: 0; font-size: 20px;\"><> Resumo Agro Cascavel <span style=\"font-size: 12px; background-color: #e8f5e9; color: #2e7d32; padding: 3px 8px; border-radius: 12px; vertical-align: middle;\">FREE</span></h2>     <p style=\"color: #666666; font-size: 13px; margin: 5px 0 0 0;\">As 2 principais notícias do agronegócio hoje</p>   </div>    <p style=\"font-size: 14px;\"><strong>Bom dia, produtor!</strong> Aqui estão os destaques mais relevantes desta manhã:</p>    <!-- Lista com as 2 manchetes -->   <ul style=\"padding-left: 20px; margin: 15px 0; font-size: 14px;\">     <!-- Insira aqui APENAS 2 <li> bem resumidos com os destaques -->   </ul>    <!-- Banner de Conversão / Call-To-Action (CTA) -->   <div style=\"background-color: #fff8e1; border: 1px solid #ffe082; border-radius: 6px; padding: 18px; margin-top: 25px; text-align: center;\">     <p style=\"margin: 0 0 10px 0; font-size: 14px; color: #795548; font-weight: bold;\">       = Quer receber a análise completa do mercado, cotação do Dólar PTAX, clima detalhado e tendências de grãos?     </p>     <a href=\"[https://mpago.la/tu_link](https://mpago.la/tu_link)\" style=\"display: inline-block; background-color: #2e7d32; color: #ffffff; text-decoration: none; font-weight: bold; padding: 10px 20px; border-radius: 4px; font-size: 14px; margin-top: 5px;\">       Assinar Plan PREMIUM por R$ 49/mês     </a>   </div>    <!-- Rodapé -->   <div style=\"margin-top: 25px; border-top: 1px solid #eee; padding-top: 15px; font-size: 11px; color: #888888; text-align: center;\">     Resumo Agro Cascavel " Informativo Diário   </div>  </div>"
+              }
+            ]
+          },
+          "batching": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.9,
+        "position": [
+          -1920,
+          -1072
+        ],
+        "id": "277b0bda-fcd0-458f-8d62-59e5caf82118",
+        "name": "PLAN FREE"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $('Aggregate').first().json.data.map(item => item.title + \": \" + (item.description || item.contentSnippet || \"\")).join('\\n\\n') }}",
+          "messages": {
+            "messageValues": [
+              {
+                "message": "Você é um consultor executivo do agronegócio em Cascavel, Paraná. Com base nos dados fornecidos, redija o boletim diário \"Agro Cascavel Executive\".  REGRAS OBRIGATÓRIAS DE FORMATO: 1. Retorne EXCLUSIVAMENTE código HTML válido. Não use blocos de código markdown (```html). 2. Inclua uma saudação curta no início e uma despedida profissional no final. 3. Estilize as seções diretamente com CSS inline para garantir um visual elegante no Gmail.  ESTRUTURA HTML ESPERADA: <div style=\"font-family: Arial, sans-serif; color: #333333; max-width: 650px; margin: 0 auto; line-height: 1.6; border: 1px solid #e0e0e0; border-radius: 8px; padding: 25px; background-color: #ffffff;\">      <div style=\"border-bottom: 2px solid #2e7d32; padding-bottom: 12px; margin-bottom: 20px;\">     <h2 style=\"color: #2e7d32; margin: 0; font-size: 22px;\"><> Agro Cascavel - Boletim Executivo</h2>     <p style=\"color: #666666; font-size: 13px; margin: 5px 0 0 0;\">Análise diária para tomada de decisão no campo</p>   </div>    <p style=\"font-size: 15px;\"><strong>Bom dia, produtor!</strong> Confira as informações estratégicas para hoje:</p>    <h3 style=\"color: #1b5e20; background-color: #f1f8e9; padding: 6px 10px; border-left: 4px solid #2e7d32; font-size: 16px; margin-top: 20px;\">=È Mercado & Cotações</h3>   <ul style=\"padding-left: 20px; margin: 10px 0;\">     <!-- Itens de Mercado em <li> -->   </ul>    <h3 style=\"color: #01579b; background-color: #e1f5fe; padding: 6px 10px; border-left: 4px solid #0288d1; font-size: 16px; margin-top: 20px;\"><Û Política & Economia</h3>"
+              }
+            ]
+          },
+          "batching": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.9,
+        "position": [
+          -1904,
+          -1568
+        ],
+        "id": "488fc9d5-3ae5-42c5-8090-135f4faf617f",
+        "name": "PLAN PREMIUM"
+      },
+      {
+        "parameters": {
+          "mode": "chooseBranch"
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          -2880,
+          -928
+        ],
+        "id": "a3e03b44-5c85-4a9f-b461-f4a5c51338bd",
+        "name": "Merge1"
+      },
+      {
+        "parameters": {
+          "fromEmail": "rafaeljgomezg@gmail.com",
+          "toEmail": "={{ $('If').item.json.email }}",
+          "subject": "={{ $json.plan === 'PREMIUM' ? '<> Boletim Executivo Agro Cascavel - Premium' : '<> Resumo Agro Cascavel' }}",
+          "html": "={{ $json.text.replace(/\\\\n/g, '<br>').replace(/\\*\\*(.*?)\\*\\*/g, '<b>$1</b>') }}",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 2.1,
+        "position": [
+          -1536,
+          -1568
+        ],
+        "id": "9a0aa6cc-8928-4b94-8dab-e89b7563eb5f",
+        "name": "Send an Email",
+        "webhookId": "45481843-fe44-4f1f-b8bc-560b25cc2097",
+        "credentials": {
+          "smtp": {
+            "id": "8sJSX0mI8cnOgkel",
+            "name": "SMTP account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "fromEmail": "rafaeljgomezg@gmail.com",
+          "toEmail": "={{ $('If').item.json.email }}",
+          "subject": "={{ $json.plan === 'PREMIUM' ? '<> Boletim Executivo Agro Cascavel - Premium' : '<> Resumo Agro Cascavel' }}",
+          "html": "={{ $json.text.replace(/\\\\n/g, '<br>').replace(/\\*\\*(.*?)\\*\\*/g, '<b>$1</b>') }}",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 2.1,
+        "position": [
+          -1536,
+          -1072
+        ],
+        "id": "137e0839-e411-4427-b8d7-87429d17deb7",
+        "name": "Send an Email1",
+        "webhookId": "45481843-fe44-4f1f-b8bc-560b25cc2097",
+        "credentials": {
+          "smtp": {
+            "id": "8sJSX0mI8cnOgkel",
+            "name": "SMTP account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": "openrouter/free",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+        "typeVersion": 1,
+        "position": [
+          -2864,
+          -288
+        ],
+        "id": "a2c916eb-f55f-489a-8060-d4c2ce09d92b",
+        "name": "OpenRouter Chat Model2",
+        "credentials": {
+          "openRouterApi": {
+            "id": "LwXur1PFKqDTzpJK",
+            "name": "OpenRouter account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "// 1. Capturar datos del nodo de entrada con valores por defecto\nconst inputJson = $input.first()?.json || {};\n\n// 2. Extraer y formatear la Cotización del Dólar PTAX (a 4 decimales)\nlet dolarRaw = inputJson.cotizacion_ptax \n  || inputJson.dolar;\n\n// Si no viene en el input directo, busca en el nodo de la cotización\ntry {\n  if (!dolarRaw && typeof $('Cotizacion Dolar BCB') !== 'undefined') {\n    const bcbJson = $('Cotizacion Dolar BCB').first()?.json;\n    // Extrae de AwesomeAPI (USDBRL.bid) o del formato antiguo BCB\n    dolarRaw = bcbJson?.USDBRL?.bid || bcbJson?.value?.[0]?.cotacaoVenda;\n  }\n} catch (e) {\n  // Ignora si el nodo no existe en la ejecución actual\n}\n\n// Si sigue sin encontrarse, intenta extraerlo del texto generado por la IA\nif (!dolarRaw && inputJson.text) {\n  const matchDolar = inputJson.text.match(/R\\$\\s*([\\d[.,]+)/i);\n  if (matchDolar) {\n    dolarRaw = matchDolar[1].replace(',', '.');\n  }\n}\n\nconst dolarNum = parseFloat(dolarRaw);\nconst dolar = !isNaN(dolarNum) ? dolarNum.toFixed(4).replace('.', ',') : '4,9935';\n\n// 3. Extraer y formatear el Clima\nlet tempRaw = inputJson.temperatura;\nlet condRaw = inputJson.condicion_clima;\n\ntry {\n  if (!tempRaw && typeof $('Clima Cascavel') !== 'undefined') {\n    tempRaw = $('Clima Cascavel').first()?.json?.main?.temp;\n    condRaw = $('Clima Cascavel').first()?.json?.weather?.[0]?.description;\n  }\n} catch (e) {\n  // Ignora si el nodo no existe en la ejecución actual\n}\n\nconst tempNum = parseFloat(tempRaw);\nconst clima = !isNaN(tempNum) ? Math.round(tempNum) : '20';\nconst condicion = condRaw || 'chuva leve';\n\n// 4. Extraer y limpiar el Titular de la Noticia desde el texto de la IA\nlet textoIA = '';\ntry {\n  if (typeof $('Instagram Mensaje') !== 'undefined') {\n    textoIA = $('Instagram Mensaje').first()?.json?.text || '';\n  }\n} catch (e) {\n  // Ignora si el nodo no existe\n}\n\nif (!textoIA && inputJson.text) {\n  textoIA = inputJson.text;\n}\n\nlet primerRenglon = textoIA.split('\\n').find(linea => linea.trim().length > 0) || '';\nprimerRenglon = primerRenglon.replace(/[*#]/g, '').trim();\n\nconst titulo = inputJson.resumen_noticia \n  || (primerRenglon.length > 5 ? primerRenglon : null)\n  || 'Dólar PTAX e Clima: Tudo sobre o Agro hoje!';\n\n// 5. Imagen de Fondo Dinámica\nlet palabraClave = inputJson.keyword || '';\n\nif (!palabraClave) {\n  const tituloMin = titulo.toLowerCase();\n  if (tituloMin.includes('laranja') || tituloMin.includes('suco') || tituloMin.includes('citros')) palabraClave = 'citrus';\n  else if (tituloMin.includes('soja')) palabraClave = 'soybean';\n  else if (tituloMin.includes('milho')) palabraClave = 'cornfield';\n  else if (tituloMin.includes('boi') || tituloMin.includes('carne') || tituloMin.includes('gado')) palabraClave = 'cattle';\n  else if (tituloMin.includes('trator') || tituloMin.includes('maquina')) palabraClave = 'tractor';\n  else if (tituloMin.includes('café')) palabraClave = 'coffee';\n  else palabraClave = 'agriculture';\n}\n\n// URL de Picsum combinando el tema de la noticia con una variación aleatoria por ejecución\nconst fotoFondo = inputJson.imagen_gemini_url \n  || `https://picsum.photos/seed/${encodeURIComponent(palabraClave + Date.now())}/1080/1080`;\n\nconst logoUrl = 'https://i.ibb.co/h1HcGsfX/agrotech-logo.jpg'; \nconst fecha = new Date().toLocaleDateString('pt-BR');\n\n// 6. Construcción del HTML\nconst htmlContent = `\n<!DOCTYPE html>\n<html lang=\"pt\">\n<head>\n<meta charset=\"UTF-8\">\n<style>\n  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }\n  body { width: 1080px; height: 1080px; background-color: #064E3B; position: relative; overflow: hidden; }\n  \n  /* Fondo con overlay */\n  .bg-image {\n    position: absolute; top: 0; left: 0; width: 1080px; height: 1080px;\n    background-image: url('${fotoFondo}'); background-size: cover; background-position: center;\n  }\n  .overlay {\n    position: absolute; top: 0; left: 0; width: 1080px; height: 1080px;\n    background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(6,78,59,0.85) 100%);\n  }\n\n  /* Contenido */\n  .container {\n    position: relative; z-index: 10; width: 1080px; height: 1080px;\n    padding: 60px; display: flex; flex-direction: column; justify-content: space-between;\n  }\n\n  /* Header */\n  .header {\n    background: #FFFFFF; border-radius: 20px; padding: 20px 40px;\n    display: flex; justify-content: space-between; align-items: center;\n    box-shadow: 0 10px 25px rgba(0,0,0,0.2);\n  }\n  .logo { height: 80px; object-fit: contain; }\n  .location-badge { color: #22B182; font-weight: 700; font-size: 22px; }\n\n  /* Body / Noticias */\n  .main-content { margin-top: auto; margin-bottom: auto; }\n  .tag {\n    display: inline-block; background-color: #22B182; color: #FFFFFF;\n    font-weight: 800; font-size: 18px; padding: 10px 20px; border-radius: 50px;\n    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 25px;\n  }\n  .title {\n    color: #FFFFFF; font-size: 48px; font-weight: 800; line-height: 1.25;\n    text-shadow: 0 4px 10px rgba(0,0,0,0.5);\n  }\n\n  /* Footer / Cards de Indicadores */\n  .footer { display: flex; gap: 20px; }\n  .card {\n    flex: 1; background: rgba(15, 23, 42, 0.85); border: 2px solid #22B182;\n    border-radius: 16px; padding: 20px; color: #FFFFFF; text-align: center;\n    backdrop-filter: blur(10px);\n  }\n  .card-label { font-size: 16px; color: #94A3B8; text-transform: uppercase; font-weight: 600; }\n  .card-value { font-size: 28px; font-weight: 800; color: #FFFFFF; margin-top: 5px; }\n</style>\n</head>\n<body>\n  <div class=\"bg-image\"></div>\n  <div class=\"overlay\"></div>\n  <div class=\"container\">\n    <div class=\"header\">\n      <img src=\"${logoUrl}\" class=\"logo\" alt=\"Agrotech\" onerror=\"this.style.display='none'\">\n      <div class=\"location-badge\">Cascavel, PR " ${fecha}</div>\n    </div>\n    \n    <div class=\"main-content\">\n      <div class=\"tag\">Boletim DaaS</div>\n      <h1 class=\"title\">${titulo}</h1>\n    </div>\n\n    <div class=\"footer\">\n      <div class=\"card\">\n        <div class=\"card-label\">Dólar PTAX</div>\n        <div class=\"card-value\">R$ ${dolar}</div>\n      </div>\n      <div class=\"card\">\n        <div class=\"card-label\">Clima Cascavel</div>\n        <div class=\"card-value\">${clima}°C ${condicion}</div>\n      </div>\n    </div>\n  </div>\n</body>\n</html>\n`;\n\nreturn [{ json: { html: htmlContent } }];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -2528,
+          -320
+        ],
+        "id": "6ee2ce49-dc64-4ddb-935a-d77cfd2f4494",
+        "name": "Code in JavaScript"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://graph.facebook.com/v22.0/17841476682634798/media",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "image_url",
+                "value": "={{ $json.url }}.png"
+              },
+              {
+                "name": "caption",
+                "value": "={{ $('Instagram Mensaje').item.json.text.replace(/\\\\n/g, '\\n') }}   "
+              },
+              {
+                "name": "access_token",
+                "value": "EAAPWvvJZA8c8BShnDZAQFbis3FbIFGAM27sZCw0ayePZCBkoZAchZAkNV4ZAZAMg4JTNZCkcfZANIxDiJJFy6cpHDMZA9n4ZCS22xEVZCcZBSgP2u4mj1u8Fbl9282W0wWTJpaVWlhUiw1CMBL1JK5cyQngaOODXRRo4drsmxhYuxduORyIjAwwbfJ0ZBifdoPV3DacXgZDZD"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          -2048,
+          -400
+        ],
+        "id": "5c543189-c4da-490c-8db1-8bad8afa8762",
+        "name": "HTTP Request1"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://graph.facebook.com/v22.0/17841476682634798/media_publish",
+          "sendBody": true,
+          "contentType": "form-urlencoded",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "creation_id",
+                "value": "={{ $json.id }}"
+              },
+              {
+                "name": "access_token",
+                "value": "EAAPWvvJZA8c8BShnDZAQFbis3FbIFGAM27sZCw0ayePZCBkoZAchZAkNV4ZAZAMg4JTNZCkcfZANIxDiJJFy6cpHDMZA9n4ZCS22xEVZCcZBSgP2u4mj1u8Fbl9282W0wWTJpaVWlhUiw1CMBL1JK5cyQngaOODXRRo4drsmxhYuxduORyIjAwwbfJ0ZBifdoPV3DacXgZDZD"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          -1600,
+          -400
+        ],
+        "id": "8d2b5a6d-d4b4-4c76-9c30-f8523ad893c6",
+        "name": "HTTP Request2"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Você é um jornalista agrícola imparcial de Cascavel, PR. Crie uma legenda estritamente técnica e informativa para o Instagram com base nestes dados reais de mercado:\n\n- Dólar PTAX: R${{ $('Cotizacion Dolar BCB').item.json.USDBRL.bid }}\n- Clima em Cascavel: {{ $('Clima Cascavel').first().json.main.temp }}°C\n\nNotícias do dia:\n{{ JSON.stringify($json.data) }}\n\nREGRAS OBRIGATÓRIAS:\n1. Escolha a notícia mais relevante para o agronegócio e crie um TÍTULO principal na 1ª linha de até 8 palavras (sem asteriscos, sem hashtag #, apenas texto limpo).\n2. Escreva 3 destaques objetivos e estritamente técnicos com dados econômicos e agrícolas reais fornecidos acima.\n3. Mantenha um tom estritamente jornalístico, neutro e focado em fatos de mercado e produção rural.\n4. Gere de 3 a 5 hashtags estratégicas ao final da legenda.",
+          "messages": {
+            "messageValues": []
+          },
+          "batching": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.9,
+        "position": [
+          -2880,
+          -464
+        ],
+        "id": "7961443a-13b1-4bf5-9078-2541c6d77e82",
+        "name": "Instagram Mensaje"
+      },
+      {
+        "parameters": {
+          "amount": 10
+        },
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          -1824,
+          -400
+        ],
+        "id": "6f8ddef8-7a60-4f19-a640-c529227815d7",
+        "name": "Wait",
+        "webhookId": "81466fab-12e8-4f70-b062-27a9b7479387"
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 12,
+                "triggerAtMinute": 30
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.4,
+        "position": [
+          -4480,
+          -640
+        ],
+        "id": "425e5d00-d727-4a21-9661-38fb3585fce2",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "url": "https://www.noticiasagricolas.com.br/podcasts.rss",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.rssFeedRead",
+        "typeVersion": 1.2,
+        "position": [
+          -3904,
+          -176
+        ],
+        "id": "1d5ce26d-2475-4122-a3b5-d8e1af4a8361",
+        "name": "NoticiasAgricolas"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://hcti.io/v1/image",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpBasicAuth",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "html",
+                "value": "={{ $json.html }}"
+              },
+              {
+                "name": "viewport_width",
+                "value": "1080"
+              },
+              {
+                "name": "viewport_height",
+                "value": "1080"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          -2224,
+          -384
+        ],
+        "id": "25407312-5811-43d8-a3e5-7ed416ac6570",
+        "name": "HTMLTOIMG",
+        "credentials": {
+          "httpBasicAuth": {
+            "id": "wIw87Cn3FZ9MXA2O",
+            "name": "HTMLTOIMG CREDENTIAL"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Cotizacion Dolar BCB": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Clima Cascavel": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "CanalRural": {
+        "main": [
+          [
+            {
+              "node": "Limit",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "agroemdia": {
+        "main": [
+          [
+            {
+              "node": "Limit1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "globo": {
+        "main": [
+          [
+            {
+              "node": "Limit2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "Aggregate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenRouter Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "PLAN PREMIUM",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aggregate": {
+        "main": [
+          [
+            {
+              "node": "Merge1",
+              "type": "main",
+              "index": 1
+            },
+            {
+              "node": "Instagram Mensaje",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Limit": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 2
+            }
+          ]
+        ]
+      },
+      "Limit1": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 3
+            }
+          ]
+        ]
+      },
+      "Limit2": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 4
+            }
+          ]
+        ]
+      },
+      "Limit3": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 5
+            }
+          ]
+        ]
+      },
+      "Get many rows": {
+        "main": [
+          [
+            {
+              "node": "Merge1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [],
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "PLAN PREMIUM",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "PLAN FREE",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenRouter Chat Model1": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "PLAN FREE",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge1": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "PLAN PREMIUM": {
+        "main": [
+          [
+            {
+              "node": "Send an Email",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "PLAN FREE": {
+        "main": [
+          [
+            {
+              "node": "Send an Email1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenRouter Chat Model2": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Instagram Mensaje",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript": {
+        "main": [
+          [
+            {
+              "node": "HTMLTOIMG",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request1": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Instagram Mensaje": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Cotizacion Dolar BCB",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Clima Cascavel",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "CanalRural",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "agroemdia",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "globo",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Get many rows",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "NoticiasAgricolas",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "NoticiasAgricolas": {
+        "main": [
+          [
+            {
+              "node": "Limit3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTMLTOIMG": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "RAFAEL GOMEZ GARCIA",
+    "name": "Version 5a46c786",
+    "description": "",
+    "autosaved": true,
+    "createdAt": "2026-10-15T16:10:27.605Z",
+    "updatedAt": "2026-10-15T16:10:30.000Z"
+  }
+}
