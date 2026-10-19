@@ -1,0 +1,1333 @@
+{
+  "id": "9SOTrCBpO6wCyYnx",
+  "name": "LicitacionesAutogestion",
+  "active": true,
+  "activeVersionId": "9f10fd41-039c-42da-9281-61f01fe1e2f6",
+  "createdAt": "2026-10-08T21:36:23.096Z",
+  "updatedAt": "2026-10-14T23:03:26.593Z",
+  "isArchived": false,
+  "versionId": "9f10fd41-039c-42da-9281-61f01fe1e2f6",
+  "triggerCount": 3,
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "usuarios",
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "access_token",
+              "condition": "eq",
+              "keyValue": "={{ $json.query.token }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "status",
+              "fieldValue": "CANCELED"
+            },
+            {
+              "fieldId": "access_token",
+              "fieldValue": "={{null}}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        928,
+        -384
+      ],
+      "id": "40a1754e-4e40-41c9-9dac-6aa48076874a",
+      "name": "Update a row",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "uc3lfzmHZOvjm4Eu",
+          "name": "Supabase Licitaciones"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<link rel=\"icon\" href=\"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>=Ë</text></svg>\">\n  <title>Suscripción Cancelada</title>\n  <style>\n    body { font-family: Arial, sans-serif; background-color: #f4f6f8; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }\n    .card { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; max-width: 400px; }\n    h2 { color: #d9534f; margin-bottom: 10px; }\n    p { color: #555; line-height: 1.5; }\n  </style>\n</head>\n<body>\n  <div class=\"card\">\n    <h2>Suscripción Cancelada</h2>\n    <p>Hemos procesado tu solicitud correctamente. Ya no recibirás más boletines de licitaciones en tu correo electrónico.</p>\n  </div>\n</body>\n</html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1120,
+        -384
+      ],
+      "id": "b2098eab-9c43-460c-901c-b29618a4c78e",
+      "name": "StatusCanceled"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <link rel=\"icon\" href=\"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>=Ë</text></svg>\">\n    <title>Enlace no válido - Licitaciones Venezuela</title>\n    <style>\n        body { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif; background-color: #f3f4f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }\n        .card { background: #ffffff; padding: 40px 32px; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); width: 100%; max-width: 420px; text-align: center; }\n        .icon-container { width: 64px; height: 64px; background-color: #fee2e2; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px auto; }\n        .icon { color: #dc2626; font-size: 32px; font-weight: bold; }\n        h2 { color: #111827; font-size: 22px; margin-top: 0; margin-bottom: 12px; }\n        p { color: #6b7280; font-size: 15px; margin-bottom: 24px; line-height: 1.5; }\n    </style>\n</head>\n<body>\n    <div class=\"card\">\n        <div class=\"icon-container\">\n            <span class=\"icon\">!</span>\n        </div>\n        <h2>Enlace no válido o expirado</h2>\n        <p>Este enlace ya no es válido, el usuario no existe o la suscripción ha sido cancelada. Si consideras que se trata de un error, por favor comunícate con soporte.</p>\n    </div>\n</body>\n</html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1744,
+        224
+      ],
+      "id": "9195ffb6-8e6f-4632-80b8-e2866c247254",
+      "name": "No se Encuentra el Usuario"
+    },
+    {
+      "parameters": {
+        "path": "desuscripcion",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -16,
+        -176
+      ],
+      "id": "f4d644b6-098a-441b-83e8-910595d6893d",
+      "name": "Cancel",
+      "webhookId": "dd435314-2b52-43d1-9eb7-d37e8edee1b0"
+    },
+    {
+      "parameters": {
+        "path": "preferencias",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -16,
+        224
+      ],
+      "id": "c39a9a4f-3ef5-4588-967b-f9021c5fd4ad",
+      "name": "Preferencias",
+      "webhookId": "a2128289-bfaf-4b94-83ea-e3e9ccd94516"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "preferencias/salvar",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        432
+      ],
+      "id": "261a3fbb-4a9c-4c56-abf8-0c47ef52f57a",
+      "name": "Preferencias_salvar",
+      "webhookId": "a2128289-bfaf-4b94-83ea-e3e9ccd94516"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "usuarios",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "access_token",
+              "keyValue": "={{ $json.query.token }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        208,
+        224
+      ],
+      "id": "2f35a373-4cca-4e83-8526-896320983b2e",
+      "name": "Get a row",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "uc3lfzmHZOvjm4Eu",
+          "name": "Supabase Licitaciones"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "81994aa6-b043-4283-b982-b87fe43e2165",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "3e41a414-d9d0-471f-b260-1f7990a34003",
+              "leftValue": "={{ $json.access_token }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        432,
+        224
+      ],
+      "id": "45d403f7-9df1-4b99-98ce-33c8c7548606",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "sectores_maestros",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "activo",
+              "condition": "is",
+              "keyValue": "={{ true }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        656,
+        128
+      ],
+      "id": "87bca95d-05fe-4ed6-9def-7f0a2a35ae64",
+      "name": "Get many rows",
+      "credentials": {
+        "supabaseApi": {
+          "id": "uc3lfzmHZOvjm4Eu",
+          "name": "Supabase Licitaciones"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Obtenemos los datos del usuario directamente desde el nodo Get a row original\nconst usuario = $('Get a row').first().json;\nconst token = usuario.access_token;\nconst plan = usuario.plan || 'FREE';\nconst sectoresGuardados = usuario.sectores || [];\n\n// Lista completa de todos los sectores disponibles\nconst todosLosSectores = [\n    \"Tecnología y Telecomunicaciones\",\n    \"Salud y Farmacéutica\",\n    \"Construcción y Obra Civil\",\n    \"Alimentos y Agro\",\n    \"Transporte y Repuestos\",\n    \"Servicios Generales y Mantenimiento\",\n    \"Oficina y Uniformes\",\n    \"Consultoría e Ingeniería\",\n    \"Maquinaria y Equipos Industriales\"\n];\n\n// Si es FREE y no tiene sectores guardados previamente, marcamos todos por defecto\nlet sectoresActivos = sectoresGuardados;\nif (plan === 'FREE' && (!sectoresGuardados || sectoresGuardados.length === 0)) {\n    sectoresActivos = todosLosSectores;\n}\n\n// Generamos el HTML de los checkboxes de forma dinámica\nlet checkboxesHTML = todosLosSectores.map(sector => {\n    const isChecked = sectoresActivos.includes(sector) ? 'checked' : '';\n    return `\n        <label class=\"checkbox-item\">\n            <input type=\"checkbox\" name=\"sectores\" value=\"${sector}\" ${isChecked}>\n            <span>${sector}</span>\n        </label>\n    `;\n}).join('');\n\n// HTML completo de la página de preferencias\nconst htmlResponse = `<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Selección de Sectores - Licitaciones Venezuela</title>\n    <link rel=\"icon\" href=\"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>=Ë</text></svg>\">\n    <style>\n        body { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif; background-color: #f3f4f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }\n        .card { background: #ffffff; padding: 32px; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); width: 100%; max-width: 480px; }\n        h2 { color: #111827; font-size: 20px; margin-top: 0; margin-bottom: 8px; }\n        p { color: #6b7280; font-size: 14px; margin-bottom: 20px; }\n        .checkbox-container { display: flex; flex-direction: column; gap: 12px; max-height: 300px; overflow-y: auto; margin-bottom: 20px; padding-right: 4px; }\n        .checkbox-item { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #374151; cursor: pointer; }\n        .checkbox-item input { width: 18px; height: 18px; accent-color: #2563eb; cursor: pointer; }\n        button { background-color: #2563eb; color: white; border: none; width: 100%; padding: 12px; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; transition: background 0.2s; }\n        button:hover { background-color: #1d4ed8; }\n        .plan-badge { display: inline-block; background: #dbeafe; color: #1e40af; font-size: 12px; padding: 4px 8px; border-radius: 4px; font-weight: 600; margin-bottom: 12px; }\n    </style>\n</head>\n<body>\n    <div class=\"card\">\n        <span class=\"plan-badge\">Plan: ${plan}</span>\n        <h2>Configura tus sectores de interés</h2>\n        <p>Selecciona los sectores sobre los cuales deseas recibir notificaciones en tu boletín.</p>\n        \n        <form action=\"/webhook/preferencias/salvar\" method=\"POST\">\n            <input type=\"hidden\" name=\"token\" value=\"${token}\">\n            <div class=\"checkbox-container\">\n                ${checkboxesHTML}\n            </div>\n            <button type=\"submit\">Guardar Preferencias</button>\n        </form>\n    </div>\n</body>\n</html>`;\n\nreturn { json: { html: htmlResponse } };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        816,
+        128
+      ],
+      "id": "31ceae17-01e2-49f5-acd7-13df2c47d97b",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.html }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html; charset=utf-8"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1008,
+        128
+      ],
+      "id": "339f8871-887e-4609-b869-cbf54f1c93e9",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body;\n\nreturn {\n    json: {\n        token: body.token,\n        sectores: body.sectores || []\n    }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        432
+      ],
+      "id": "36c60b7e-b42e-4de8-ac15-aacf422cf4ed",
+      "name": "Normalizar Formulario"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n     <link rel=\"icon\" href=\"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>=Ë</text></svg>\">\n    <title>Preferencias Guardadas - Licitaciones Venezuela</title>\n    <style>\n        body { \n            font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; \n            background-color: #f3f4f6; \n            display: flex; \n            justify-content: center; \n            align-items: center; \n            min-height: 100vh; \n            margin: 0; \n            padding: 20px; \n            box-sizing: border-box; \n        }\n        .card { \n            background: #ffffff; \n            padding: 40px 32px; \n            border-radius: 12px; \n            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); \n            width: 100%; \n            max-width: 420px; \n            text-align: center; \n        }\n        .icon-container {\n            width: 64px;\n            height: 64px;\n            background-color: #dcfce7;\n            border-radius: 50%;\n            display: flex;\n            justify-content: center;\n            align-items: center;\n            margin: 0 auto 20px auto;\n        }\n        .icon {\n            color: #16a34a;\n            font-size: 32px;\n            font-weight: bold;\n        }\n        h2 { \n            color: #111827; \n            font-size: 22px; \n            margin-top: 0; \n            margin-bottom: 12px; \n        }\n        p { \n            color: #6b7280; \n            font-size: 15px; \n            margin-bottom: 24px; \n            line-height: 1.5; \n        }\n        .footer-note {\n            font-size: 13px;\n            color: #9ca3af;\n            border-top: 1px solid #e5e7eb;\n            padding-top: 16px;\n            margin-top: 16px;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"card\">\n        <div class=\"icon-container\">\n            <span class=\"icon\"></span>\n        </div>\n        <h2>¡Preferencias Actualizadas!</h2>\n        <p>Tus sectores de interés han sido guardados correctamente en el sistema. A partir de ahora recibirás los boletines adaptados a tus selecciones.</p>\n        <div class=\"footer-note\">\n            Ya puedes cerrar esta pestaña de forma segura.\n        </div>\n    </div>\n</body>\n</html>",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html; charset=utf-8"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        672,
+        432
+      ],
+      "id": "2caa476d-29e0-493e-ab66-cab290379807",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "usuarios",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "access_token",
+              "keyValue": "={{ $json.query.token }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        160,
+        -176
+      ],
+      "id": "2c4b0804-2790-4f5c-ad10-ab16cefe7e8b",
+      "name": "Get a row1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "uc3lfzmHZOvjm4Eu",
+          "name": "Supabase Licitaciones"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "tableId": "usuarios",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "={{ $json.id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        944,
+        -192
+      ],
+      "id": "c612f465-9f32-4e3b-ba57-95a466ffaa57",
+      "name": "Delete a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "uc3lfzmHZOvjm4Eu",
+          "name": "Supabase Licitaciones"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n   <link rel=\"icon\" href=\"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>=Ë</text></svg>\">\n  <title>Suscripción Cancelada</title>\n  <style>\n    body { font-family: Arial, sans-serif; background-color: #f4f6f8; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }\n    .card { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; max-width: 400px; }\n    h2 { color: #d9534f; margin-bottom: 10px; }\n    p { color: #555; line-height: 1.5; }\n  </style>\n</head>\n<body>\n  <div class=\"card\">\n    <h2>Suscripción Cancelada</h2>\n    <p>Hemos procesado tu solicitud correctamente. Ya no recibirás más boletines de licitaciones en tu correo electrónico.</p>\n  </div>\n</body>\n</html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1136,
+        -192
+      ],
+      "id": "2fc31086-3eb3-486c-98bf-580b4bb857ec",
+      "name": "borrado"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "01974542-abf8-465b-a7f4-42ad9c826718",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        336,
+        -176
+      ],
+      "id": "19e07378-d801-4f14-8978-d746650c0c1b",
+      "name": "usuario existe?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a015b493-8082-4513-8b4e-3fbc24b7069e",
+              "leftValue": "={{ $json.plan }}",
+              "rightValue": "FREE",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        544,
+        -368
+      ],
+      "id": "d70a960b-7a16-4a70-b613-7338a515284a",
+      "name": "!plan free?"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE usuarios \nSET sectores = ARRAY[{{ $json.sectores && $json.sectores.length > 0 ?$json.sectores.map(s => `'` + s.replace(/'/g, \"''\") + `'`).join(', ') : '' }}]::text[] \nWHERE access_token = '{{ $json.token }}';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.7,
+      "position": [
+        448,
+        432
+      ],
+      "id": "e5cdb9df-5063-4a2d-8de5-326f1d45d795",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "iJYwy1fBjjOBKndW",
+          "name": "Postgres Licitacoines"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Update a row": {
+      "main": [
+        [
+          {
+            "node": "StatusCanceled",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cancel": {
+      "main": [
+        [
+          {
+            "node": "Get a row1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preferencias": {
+      "main": [
+        [
+          {
+            "node": "Get a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a row": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Get many rows",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No se Encuentra el Usuario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many rows": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook": {
+      "main": [
+        []
+      ]
+    },
+    "Preferencias_salvar": {
+      "main": [
+        [
+          {
+            "node": "Normalizar Formulario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalizar Formulario": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a row1": {
+      "main": [
+        [
+          {
+            "node": "usuario existe?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete a row": {
+      "main": [
+        [
+          {
+            "node": "borrado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "usuario existe?": {
+      "main": [
+        [
+          {
+            "node": "!plan free?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No se Encuentra el Usuario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "!plan free?": {
+      "main": [
+        [
+          {
+            "node": "Update a row",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Delete a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "nodeGroups": [],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "vdZzgMGEWXkNeQqY",
+    "timezone": "America/Caracas",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
+  "shared": [
+    {
+      "role": "workflow:owner",
+      "workflowId": "9SOTrCBpO6wCyYnx",
+      "projectId": "TgZejVKOlIvkpozD",
+      "createdAt": "2026-10-08T21:36:23.104Z",
+      "updatedAt": "2026-10-08T21:36:23.104Z"
+    }
+  ],
+  "activeVersion": {
+    "versionId": "9f10fd41-039c-42da-9281-61f01fe1e2f6",
+    "workflowId": "9SOTrCBpO6wCyYnx",
+    "nodes": [
+      {
+        "parameters": {
+          "operation": "update",
+          "tableId": "usuarios",
+          "matchType": "allFilters",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "access_token",
+                "condition": "eq",
+                "keyValue": "={{ $json.query.token }}"
+              }
+            ]
+          },
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "status",
+                "fieldValue": "CANCELED"
+              },
+              {
+                "fieldId": "access_token",
+                "fieldValue": "={{null}}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          928,
+          -384
+        ],
+        "id": "40a1754e-4e40-41c9-9dac-6aa48076874a",
+        "name": "Update a row",
+        "alwaysOutputData": true,
+        "credentials": {
+          "supabaseApi": {
+            "id": "uc3lfzmHZOvjm4Eu",
+            "name": "Supabase Licitaciones"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "respondWith": "text",
+          "responseBody": "<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<link rel=\"icon\" href=\"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>=Ë</text></svg>\">\n  <title>Suscripción Cancelada</title>\n  <style>\n    body { font-family: Arial, sans-serif; background-color: #f4f6f8; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }\n    .card { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; max-width: 400px; }\n    h2 { color: #d9534f; margin-bottom: 10px; }\n    p { color: #555; line-height: 1.5; }\n  </style>\n</head>\n<body>\n  <div class=\"card\">\n    <h2>Suscripción Cancelada</h2>\n    <p>Hemos procesado tu solicitud correctamente. Ya no recibirás más boletines de licitaciones en tu correo electrónico.</p>\n  </div>\n</body>\n</html>",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.5,
+        "position": [
+          1120,
+          -384
+        ],
+        "id": "b2098eab-9c43-460c-901c-b29618a4c78e",
+        "name": "StatusCanceled"
+      },
+      {
+        "parameters": {
+          "respondWith": "text",
+          "responseBody": "<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <link rel=\"icon\" href=\"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>=Ë</text></svg>\">\n    <title>Enlace no válido - Licitaciones Venezuela</title>\n    <style>\n        body { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif; background-color: #f3f4f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }\n        .card { background: #ffffff; padding: 40px 32px; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); width: 100%; max-width: 420px; text-align: center; }\n        .icon-container { width: 64px; height: 64px; background-color: #fee2e2; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px auto; }\n        .icon { color: #dc2626; font-size: 32px; font-weight: bold; }\n        h2 { color: #111827; font-size: 22px; margin-top: 0; margin-bottom: 12px; }\n        p { color: #6b7280; font-size: 15px; margin-bottom: 24px; line-height: 1.5; }\n    </style>\n</head>\n<body>\n    <div class=\"card\">\n        <div class=\"icon-container\">\n            <span class=\"icon\">!</span>\n        </div>\n        <h2>Enlace no válido o expirado</h2>\n        <p>Este enlace ya no es válido, el usuario no existe o la suscripción ha sido cancelada. Si consideras que se trata de un error, por favor comunícate con soporte.</p>\n    </div>\n</body>\n</html>",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.5,
+        "position": [
+          1744,
+          224
+        ],
+        "id": "9195ffb6-8e6f-4632-80b8-e2866c247254",
+        "name": "No se Encuentra el Usuario"
+      },
+      {
+        "parameters": {
+          "path": "desuscripcion",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          -16,
+          -176
+        ],
+        "id": "f4d644b6-098a-441b-83e8-910595d6893d",
+        "name": "Cancel",
+        "webhookId": "dd435314-2b52-43d1-9eb7-d37e8edee1b0"
+      },
+      {
+        "parameters": {
+          "path": "preferencias",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          -16,
+          224
+        ],
+        "id": "c39a9a4f-3ef5-4588-967b-f9021c5fd4ad",
+        "name": "Preferencias",
+        "webhookId": "a2128289-bfaf-4b94-83ea-e3e9ccd94516"
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "preferencias/salvar",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          0,
+          432
+        ],
+        "id": "261a3fbb-4a9c-4c56-abf8-0c47ef52f57a",
+        "name": "Preferencias_salvar",
+        "webhookId": "a2128289-bfaf-4b94-83ea-e3e9ccd94516"
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "tableId": "usuarios",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "access_token",
+                "keyValue": "={{ $json.query.token }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          208,
+          224
+        ],
+        "id": "2f35a373-4cca-4e83-8526-896320983b2e",
+        "name": "Get a row",
+        "alwaysOutputData": true,
+        "credentials": {
+          "supabaseApi": {
+            "id": "uc3lfzmHZOvjm4Eu",
+            "name": "Supabase Licitaciones"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "81994aa6-b043-4283-b982-b87fe43e2165",
+                "leftValue": "={{ $json.id }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "3e41a414-d9d0-471f-b260-1f7990a34003",
+                "leftValue": "={{ $json.access_token }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          432,
+          224
+        ],
+        "id": "45d403f7-9df1-4b99-98ce-33c8c7548606",
+        "name": "If2"
+      },
+      {
+        "parameters": {
+          "operation": "getAll",
+          "tableId": "sectores_maestros",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "activo",
+                "condition": "is",
+                "keyValue": "={{ true }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          656,
+          128
+        ],
+        "id": "87bca95d-05fe-4ed6-9def-7f0a2a35ae64",
+        "name": "Get many rows",
+        "credentials": {
+          "supabaseApi": {
+            "id": "uc3lfzmHZOvjm4Eu",
+            "name": "Supabase Licitaciones"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "// Obtenemos los datos del usuario directamente desde el nodo Get a row original\nconst usuario = $('Get a row').first().json;\nconst token = usuario.access_token;\nconst plan = usuario.plan || 'FREE';\nconst sectoresGuardados = usuario.sectores || [];\n\n// Lista completa de todos los sectores disponibles\nconst todosLosSectores = [\n    \"Tecnología y Telecomunicaciones\",\n    \"Salud y Farmacéutica\",\n    \"Construcción y Obra Civil\",\n    \"Alimentos y Agro\",\n    \"Transporte y Repuestos\",\n    \"Servicios Generales y Mantenimiento\",\n    \"Oficina y Uniformes\",\n    \"Consultoría e Ingeniería\",\n    \"Maquinaria y Equipos Industriales\"\n];\n\n// Si es FREE y no tiene sectores guardados previamente, marcamos todos por defecto\nlet sectoresActivos = sectoresGuardados;\nif (plan === 'FREE' && (!sectoresGuardados || sectoresGuardados.length === 0)) {\n    sectoresActivos = todosLosSectores;\n}\n\n// Generamos el HTML de los checkboxes de forma dinámica\nlet checkboxesHTML = todosLosSectores.map(sector => {\n    const isChecked = sectoresActivos.includes(sector) ? 'checked' : '';\n    return `\n        <label class=\"checkbox-item\">\n            <input type=\"checkbox\" name=\"sectores\" value=\"${sector}\" ${isChecked}>\n            <span>${sector}</span>\n        </label>\n    `;\n}).join('');\n\n// HTML completo de la página de preferencias\nconst htmlResponse = `<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Selección de Sectores - Licitaciones Venezuela</title>\n    <link rel=\"icon\" href=\"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>=Ë</text></svg>\">\n    <style>\n        body { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif; background-color: #f3f4f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }\n        .card { background: #ffffff; padding: 32px; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); width: 100%; max-width: 480px; }\n        h2 { color: #111827; font-size: 20px; margin-top: 0; margin-bottom: 8px; }\n        p { color: #6b7280; font-size: 14px; margin-bottom: 20px; }\n        .checkbox-container { display: flex; flex-direction: column; gap: 12px; max-height: 300px; overflow-y: auto; margin-bottom: 20px; padding-right: 4px; }\n        .checkbox-item { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #374151; cursor: pointer; }\n        .checkbox-item input { width: 18px; height: 18px; accent-color: #2563eb; cursor: pointer; }\n        button { background-color: #2563eb; color: white; border: none; width: 100%; padding: 12px; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; transition: background 0.2s; }\n        button:hover { background-color: #1d4ed8; }\n        .plan-badge { display: inline-block; background: #dbeafe; color: #1e40af; font-size: 12px; padding: 4px 8px; border-radius: 4px; font-weight: 600; margin-bottom: 12px; }\n    </style>\n</head>\n<body>\n    <div class=\"card\">\n        <span class=\"plan-badge\">Plan: ${plan}</span>\n        <h2>Configura tus sectores de interés</h2>\n        <p>Selecciona los sectores sobre los cuales deseas recibir notificaciones en tu boletín.</p>\n        \n        <form action=\"/webhook/preferencias/salvar\" method=\"POST\">\n            <input type=\"hidden\" name=\"token\" value=\"${token}\">\n            <div class=\"checkbox-container\">\n                ${checkboxesHTML}\n            </div>\n            <button type=\"submit\">Guardar Preferencias</button>\n        </form>\n    </div>\n</body>\n</html>`;\n\nreturn { json: { html: htmlResponse } };"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          816,
+          128
+        ],
+        "id": "31ceae17-01e2-49f5-acd7-13df2c47d97b",
+        "name": "Code in JavaScript"
+      },
+      {
+        "parameters": {
+          "respondWith": "text",
+          "responseBody": "={{ $json.html }}",
+          "options": {
+            "responseHeaders": {
+              "entries": [
+                {
+                  "name": "Content-Type",
+                  "value": "text/html; charset=utf-8"
+                }
+              ]
+            }
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.5,
+        "position": [
+          1008,
+          128
+        ],
+        "id": "339f8871-887e-4609-b869-cbf54f1c93e9",
+        "name": "Respond to Webhook"
+      },
+      {
+        "parameters": {
+          "jsCode": "const body = $json.body;\n\nreturn {\n    json: {\n        token: body.token,\n        sectores: body.sectores || []\n    }\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          224,
+          432
+        ],
+        "id": "36c60b7e-b42e-4de8-ac15-aacf422cf4ed",
+        "name": "Normalizar Formulario"
+      },
+      {
+        "parameters": {
+          "respondWith": "text",
+          "responseBody": "<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n     <link rel=\"icon\" href=\"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>=Ë</text></svg>\">\n    <title>Preferencias Guardadas - Licitaciones Venezuela</title>\n    <style>\n        body { \n            font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; \n            background-color: #f3f4f6; \n            display: flex; \n            justify-content: center; \n            align-items: center; \n            min-height: 100vh; \n            margin: 0; \n            padding: 20px; \n            box-sizing: border-box; \n        }\n        .card { \n            background: #ffffff; \n            padding: 40px 32px; \n            border-radius: 12px; \n            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); \n            width: 100%; \n            max-width: 420px; \n            text-align: center; \n        }\n        .icon-container {\n            width: 64px;\n            height: 64px;\n            background-color: #dcfce7;\n            border-radius: 50%;\n            display: flex;\n            justify-content: center;\n            align-items: center;\n            margin: 0 auto 20px auto;\n        }\n        .icon {\n            color: #16a34a;\n            font-size: 32px;\n            font-weight: bold;\n        }\n        h2 { \n            color: #111827; \n            font-size: 22px; \n            margin-top: 0; \n            margin-bottom: 12px; \n        }\n        p { \n            color: #6b7280; \n            font-size: 15px; \n            margin-bottom: 24px; \n            line-height: 1.5; \n        }\n        .footer-note {\n            font-size: 13px;\n            color: #9ca3af;\n            border-top: 1px solid #e5e7eb;\n            padding-top: 16px;\n            margin-top: 16px;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"card\">\n        <div class=\"icon-container\">\n            <span class=\"icon\"></span>\n        </div>\n        <h2>¡Preferencias Actualizadas!</h2>\n        <p>Tus sectores de interés han sido guardados correctamente en el sistema. A partir de ahora recibirás los boletines adaptados a tus selecciones.</p>\n        <div class=\"footer-note\">\n            Ya puedes cerrar esta pestaña de forma segura.\n        </div>\n    </div>\n</body>\n</html>",
+          "options": {
+            "responseHeaders": {
+              "entries": [
+                {
+                  "name": "Content-Type",
+                  "value": "text/html; charset=utf-8"
+                }
+              ]
+            }
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.5,
+        "position": [
+          672,
+          432
+        ],
+        "id": "2caa476d-29e0-493e-ab66-cab290379807",
+        "name": "Respond to Webhook1"
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "tableId": "usuarios",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "access_token",
+                "keyValue": "={{ $json.query.token }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          160,
+          -176
+        ],
+        "id": "2c4b0804-2790-4f5c-ad10-ab16cefe7e8b",
+        "name": "Get a row1",
+        "alwaysOutputData": true,
+        "credentials": {
+          "supabaseApi": {
+            "id": "uc3lfzmHZOvjm4Eu",
+            "name": "Supabase Licitaciones"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "delete",
+          "tableId": "usuarios",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id",
+                "condition": "eq",
+                "keyValue": "={{ $json.id }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          944,
+          -192
+        ],
+        "id": "c612f465-9f32-4e3b-ba57-95a466ffaa57",
+        "name": "Delete a row",
+        "credentials": {
+          "supabaseApi": {
+            "id": "uc3lfzmHZOvjm4Eu",
+            "name": "Supabase Licitaciones"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "respondWith": "text",
+          "responseBody": "<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n   <link rel=\"icon\" href=\"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>=Ë</text></svg>\">\n  <title>Suscripción Cancelada</title>\n  <style>\n    body { font-family: Arial, sans-serif; background-color: #f4f6f8; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }\n    .card { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; max-width: 400px; }\n    h2 { color: #d9534f; margin-bottom: 10px; }\n    p { color: #555; line-height: 1.5; }\n  </style>\n</head>\n<body>\n  <div class=\"card\">\n    <h2>Suscripción Cancelada</h2>\n    <p>Hemos procesado tu solicitud correctamente. Ya no recibirás más boletines de licitaciones en tu correo electrónico.</p>\n  </div>\n</body>\n</html>",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.5,
+        "position": [
+          1136,
+          -192
+        ],
+        "id": "2fc31086-3eb3-486c-98bf-580b4bb857ec",
+        "name": "borrado"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "01974542-abf8-465b-a7f4-42ad9c826718",
+                "leftValue": "={{ $json.id }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          336,
+          -176
+        ],
+        "id": "19e07378-d801-4f14-8978-d746650c0c1b",
+        "name": "usuario existe?"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "a015b493-8082-4513-8b4e-3fbc24b7069e",
+                "leftValue": "={{ $json.plan }}",
+                "rightValue": "FREE",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEquals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          544,
+          -368
+        ],
+        "id": "d70a960b-7a16-4a70-b613-7338a515284a",
+        "name": "!plan free?"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "UPDATE usuarios \nSET sectores = ARRAY[{{ $json.sectores && $json.sectores.length > 0 ?$json.sectores.map(s => `'` + s.replace(/'/g, \"''\") + `'`).join(', ') : '' }}]::text[] \nWHERE access_token = '{{ $json.token }}';",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.7,
+        "position": [
+          448,
+          432
+        ],
+        "id": "e5cdb9df-5063-4a2d-8de5-326f1d45d795",
+        "name": "Execute a SQL query",
+        "credentials": {
+          "postgres": {
+            "id": "iJYwy1fBjjOBKndW",
+            "name": "Postgres Licitacoines"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Update a row": {
+        "main": [
+          [
+            {
+              "node": "StatusCanceled",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Cancel": {
+        "main": [
+          [
+            {
+              "node": "Get a row1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preferencias": {
+        "main": [
+          [
+            {
+              "node": "Get a row",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get a row": {
+        "main": [
+          [
+            {
+              "node": "If2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If2": {
+        "main": [
+          [
+            {
+              "node": "Get many rows",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "No se Encuentra el Usuario",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get many rows": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Respond to Webhook": {
+        "main": [
+          []
+        ]
+      },
+      "Preferencias_salvar": {
+        "main": [
+          [
+            {
+              "node": "Normalizar Formulario",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Normalizar Formulario": {
+        "main": [
+          [
+            {
+              "node": "Execute a SQL query",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get a row1": {
+        "main": [
+          [
+            {
+              "node": "usuario existe?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Delete a row": {
+        "main": [
+          [
+            {
+              "node": "borrado",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "usuario existe?": {
+        "main": [
+          [
+            {
+              "node": "!plan free?",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "No se Encuentra el Usuario",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "!plan free?": {
+        "main": [
+          [
+            {
+              "node": "Update a row",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Delete a row",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute a SQL query": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "RAFAEL GOMEZ GARCIA",
+    "name": "Version 9f10fd41",
+    "description": "",
+    "autosaved": true,
+    "createdAt": "2026-10-14T23:03:26.607Z",
+    "updatedAt": "2026-10-16T12:38:44.000Z"
+  }
+}
