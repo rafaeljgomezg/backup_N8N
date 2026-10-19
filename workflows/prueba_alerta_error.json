@@ -1,0 +1,78 @@
+{
+  "id": "0OqvS4nR3hzySwub",
+  "name": "Prueba Alerta Error",
+  "active": false,
+  "activeVersionId": null,
+  "createdAt": "2026-10-09T21:43:14.898Z",
+  "updatedAt": "2026-10-09T22:20:17.379Z",
+  "isArchived": false,
+  "versionId": "16be0d3d-c7c8-4389-b42f-75fe6ea1df41",
+  "triggerCount": 1,
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "throw new Error(\"Prueba de alerta: Simulación de error en n8n-Pollo\");"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "66395365-5ae7-4a75-9239-992b4020d485",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "path": "762ae709-51e2-4385-a4ec-0d508e234ef9",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "6fa41452-33bb-47fc-b6be-541d9f335452",
+      "name": "Webhook",
+      "webhookId": "762ae709-51e2-4385-a4ec-0d508e234ef9"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "nodeGroups": [],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "timezone": "America/Sao_Paulo",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "vdZzgMGEWXkNeQqY"
+  },
+  "staticData": null,
+  "pinData": {},
+  "meta": null,
+  "tags": [],
+  "shared": [
+    {
+      "role": "workflow:owner",
+      "workflowId": "0OqvS4nR3hzySwub",
+      "projectId": "TgZejVKOlIvkpozD",
+      "createdAt": "2026-10-09T21:43:14.904Z",
+      "updatedAt": "2026-10-09T21:43:14.904Z"
+    }
+  ],
+  "activeVersion": null
+}
