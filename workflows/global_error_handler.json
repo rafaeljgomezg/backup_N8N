@@ -1,0 +1,188 @@
+{
+  "id": "vdZzgMGEWXkNeQqY",
+  "name": "Global Error Handler",
+  "active": true,
+  "activeVersionId": "15522ab7-de7f-486c-85e1-450633c76a90",
+  "createdAt": "2026-10-09T21:06:02.326Z",
+  "updatedAt": "2026-10-09T22:40:27.334Z",
+  "isArchived": false,
+  "versionId": "15522ab7-de7f-486c-85e1-450633c76a90",
+  "triggerCount": 0,
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\n\nconst workflowName = data.workflow?.name || 'Desconocido';\nconst failedNode = data.execution?.lastNodeExecuted || 'Desconocido';\nconst errorMessage = data.execution?.error?.message || 'Sin mensaje de error';\nconst executionUrl = data.execution?.url || '#';\n\nconst mensajeFormat = `=¨ <b>ALERTA DE ERROR EN N8N</b> =¨\\n\\n` +\n  `" <b>Workflow:</b> ${workflowName}\\n` +\n  `" <b>Nodo con falla:</b> ${failedNode}\\n` +\n  `" <b>Mensaje:</b> ${errorMessage}\\n\\n` +\n  `= <a href=\"${executionUrl}\">Ver Ejecución en n8n</a>`;\n\nreturn [{ json: { mensaje: mensajeFormat } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "f903c144-c31c-4e42-b3b2-490a03bf0a71",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "690e5e76-3516-4efe-98d7-295c55f719fb",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "sendRichMessage",
+        "chatId": "8252799232",
+        "richMessageText": "={{ $json.mensaje }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        448,
+        0
+      ],
+      "id": "46d4429e-cde9-48fb-bcff-14edc677eb24",
+      "name": "Send a rich message",
+      "webhookId": "a77896e4-dc16-4297-9a64-836e4a868457",
+      "credentials": {
+        "telegramApi": {
+          "id": "yH5NNWUEQnSbwjHI",
+          "name": "Telegram brasil"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Send a rich message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "nodeGroups": [],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
+  "shared": [
+    {
+      "role": "workflow:owner",
+      "workflowId": "vdZzgMGEWXkNeQqY",
+      "projectId": "TgZejVKOlIvkpozD",
+      "createdAt": "2026-10-09T21:06:02.341Z",
+      "updatedAt": "2026-10-09T21:06:02.341Z"
+    }
+  ],
+  "activeVersion": {
+    "versionId": "15522ab7-de7f-486c-85e1-450633c76a90",
+    "workflowId": "vdZzgMGEWXkNeQqY",
+    "nodes": [
+      {
+        "parameters": {
+          "jsCode": "const data = $input.first().json;\n\nconst workflowName = data.workflow?.name || 'Desconocido';\nconst failedNode = data.execution?.lastNodeExecuted || 'Desconocido';\nconst errorMessage = data.execution?.error?.message || 'Sin mensaje de error';\nconst executionUrl = data.execution?.url || '#';\n\nconst mensajeFormat = `=¨ <b>ALERTA DE ERROR EN N8N</b> =¨\\n\\n` +\n  `" <b>Workflow:</b> ${workflowName}\\n` +\n  `" <b>Nodo con falla:</b> ${failedNode}\\n` +\n  `" <b>Mensaje:</b> ${errorMessage}\\n\\n` +\n  `= <a href=\"${executionUrl}\">Ver Ejecución en n8n</a>`;\n\nreturn [{ json: { mensaje: mensajeFormat } }];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          224,
+          0
+        ],
+        "id": "f903c144-c31c-4e42-b3b2-490a03bf0a71",
+        "name": "Code in JavaScript"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.errorTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "690e5e76-3516-4efe-98d7-295c55f719fb",
+        "name": "Error Trigger"
+      },
+      {
+        "parameters": {
+          "operation": "sendRichMessage",
+          "chatId": "8252799232",
+          "richMessageText": "={{ $json.mensaje }}",
+          "additionalFields": {}
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          448,
+          0
+        ],
+        "id": "46d4429e-cde9-48fb-bcff-14edc677eb24",
+        "name": "Send a rich message",
+        "webhookId": "a77896e4-dc16-4297-9a64-836e4a868457",
+        "credentials": {
+          "telegramApi": {
+            "id": "yH5NNWUEQnSbwjHI",
+            "name": "Telegram brasil"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Code in JavaScript": {
+        "main": [
+          [
+            {
+              "node": "Send a rich message",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Error Trigger": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "RAFAEL GOMEZ GARCIA",
+    "name": "Version 15522ab7",
+    "description": "",
+    "autosaved": true,
+    "createdAt": "2026-10-09T22:40:27.354Z",
+    "updatedAt": "2026-10-09T22:40:56.000Z"
+  }
+}
