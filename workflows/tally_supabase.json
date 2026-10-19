@@ -1,0 +1,206 @@
+{
+  "id": "xwW3Xr0USLhn8CZI",
+  "name": "Tally-Supabase",
+  "active": true,
+  "activeVersionId": "222ab44e-dc0a-48cb-8a2a-c5d73f211af8",
+  "createdAt": "2026-10-05T00:07:09.382Z",
+  "updatedAt": "2026-10-09T22:28:55.758Z",
+  "isArchived": false,
+  "versionId": "222ab44e-dc0a-48cb-8a2a-c5d73f211af8",
+  "triggerCount": 1,
+  "nodes": [
+    {
+      "parameters": {
+        "formId": "LZQ7Qv"
+      },
+      "type": "n8n-nodes-tallyforms.tallyTrigger",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "d22a1b58-836f-41e8-a46b-3a8567aaeb1a",
+      "name": "Tally Trigger",
+      "webhookId": "a38e103c-acf4-4786-bfe9-5c1286e58e3a",
+      "credentials": {
+        "tallyApi": {
+          "id": "TtCwG1cFQVoNjGI7",
+          "name": "Tally account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableId": "usuarios",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "plan",
+              "fieldValue": "INSTAGRAM_TRIAL"
+            },
+            {
+              "fieldId": "status_pagamento",
+              "fieldValue": "ACTIVE"
+            },
+            {
+              "fieldId": "nome",
+              "fieldValue": "={{ $json.question_Jk4o07.value }}"
+            },
+            {
+              "fieldId": "email",
+              "fieldValue": "={{ $json.question_gNoz4K.value }}"
+            },
+            {
+              "fieldId": "whatsapp",
+              "fieldValue": "={{ $json.question_yqa1DW.value }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "7de6c08b-007b-4fee-ac78-cb48164b5cc1",
+      "name": "Usuarios",
+      "credentials": {
+        "supabaseApi": {
+          "id": "y8wtjmf4bPYHYS7L",
+          "name": "Supabase account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Tally Trigger": {
+      "main": [
+        [
+          {
+            "node": "Usuarios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "nodeGroups": [],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "vdZzgMGEWXkNeQqY",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": {
+    "node:Tally Trigger": {
+      "webhookId": "wAJ87z"
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
+  "shared": [
+    {
+      "role": "workflow:owner",
+      "workflowId": "xwW3Xr0USLhn8CZI",
+      "projectId": "TgZejVKOlIvkpozD",
+      "createdAt": "2026-10-05T00:07:09.401Z",
+      "updatedAt": "2026-10-05T00:07:09.401Z"
+    }
+  ],
+  "activeVersion": {
+    "versionId": "222ab44e-dc0a-48cb-8a2a-c5d73f211af8",
+    "workflowId": "xwW3Xr0USLhn8CZI",
+    "nodes": [
+      {
+        "parameters": {
+          "formId": "LZQ7Qv"
+        },
+        "type": "n8n-nodes-tallyforms.tallyTrigger",
+        "typeVersion": 2,
+        "position": [
+          0,
+          0
+        ],
+        "id": "d22a1b58-836f-41e8-a46b-3a8567aaeb1a",
+        "name": "Tally Trigger",
+        "webhookId": "a38e103c-acf4-4786-bfe9-5c1286e58e3a",
+        "credentials": {
+          "tallyApi": {
+            "id": "TtCwG1cFQVoNjGI7",
+            "name": "Tally account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "tableId": "usuarios",
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "plan",
+                "fieldValue": "INSTAGRAM_TRIAL"
+              },
+              {
+                "fieldId": "status_pagamento",
+                "fieldValue": "ACTIVE"
+              },
+              {
+                "fieldId": "nome",
+                "fieldValue": "={{ $json.question_Jk4o07.value }}"
+              },
+              {
+                "fieldId": "email",
+                "fieldValue": "={{ $json.question_gNoz4K.value }}"
+              },
+              {
+                "fieldId": "whatsapp",
+                "fieldValue": "={{ $json.question_yqa1DW.value }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          224,
+          0
+        ],
+        "id": "7de6c08b-007b-4fee-ac78-cb48164b5cc1",
+        "name": "Usuarios",
+        "credentials": {
+          "supabaseApi": {
+            "id": "y8wtjmf4bPYHYS7L",
+            "name": "Supabase account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Tally Trigger": {
+        "main": [
+          [
+            {
+              "node": "Usuarios",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "RAFAEL GOMEZ GARCIA",
+    "name": "Version 222ab44e",
+    "description": "",
+    "autosaved": true,
+    "createdAt": "2026-10-05T00:25:43.866Z",
+    "updatedAt": "2026-10-05T00:28:12.000Z"
+  }
+}
