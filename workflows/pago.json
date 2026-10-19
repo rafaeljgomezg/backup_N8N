@@ -1,0 +1,981 @@
+{
+  "id": "ijdxChfEUTmfdDi4",
+  "name": "Pago",
+  "active": true,
+  "activeVersionId": "e7251688-0a44-44cd-8c46-d5bd1dfff3c3",
+  "createdAt": "2026-10-10T22:02:06.468Z",
+  "updatedAt": "2026-10-19T13:53:14.314Z",
+  "isArchived": false,
+  "versionId": "e7251688-0a44-44cd-8c46-d5bd1dfff3c3",
+  "triggerCount": 2,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "pago-exitoso",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -128,
+        -208
+      ],
+      "id": "d380dd80-b53c-4e69-8d29-ec5131df68c2",
+      "name": "Webhook",
+      "webhookId": "36a081bc-8115-4f60-a55d-d7af08e6b641"
+    },
+    {
+      "parameters": {
+        "chatId": "8252799232",
+        "text": "== *Nuevo pago reportado por verificar*  - *ID Usuario:* {{ $json.body.UserID }} - *Plan:* {{ $json.body.plan }} - *Método:* {{ $json.body.metodo }}. Haz clic en el botón correspondiente para aprobar o rechazar:",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": " Aprobar Pago",
+                    "additionalFields": {
+                      "callback_data": "=={{ \"a_\" + $json.body.UserID + \"_\" + $json.body.plan + \"_\" + $json.body.periodo }}"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "L Rechazar",
+                    "additionalFields": {
+                      "callback_data": "=={{ \"r_\" + $json.body.UserID + \"_\" + $json.body.plan + \"_\" + $json.body.periodo }}"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        96,
+        -208
+      ],
+      "id": "fbb33af3-d534-4488-b405-50f8105761b2",
+      "name": "Send a text message",
+      "webhookId": "cef7266b-522e-40e1-9461-88f56e788865",
+      "credentials": {
+        "telegramApi": {
+          "id": "Z2Mdiv1tA9IaMqFN",
+          "name": "telegram trigger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "callback_query"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        -128,
+        0
+      ],
+      "id": "0d7c3dc1-e448-477e-bfda-0af742caa134",
+      "name": "Telegram Trigger",
+      "webhookId": "e03a3257-bebb-418e-8817-7abfa45feb39",
+      "credentials": {
+        "telegramApi": {
+          "id": "Z2Mdiv1tA9IaMqFN",
+          "name": "telegram trigger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "callback",
+        "queryId": "={{ $('Telegram Trigger').first().json.callback_query.id }}",
+        "additionalFields": {
+          "show_alert": true,
+          "text": " Solicitud procesada exitosamente y usuario notificado."
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        944,
+        -112
+      ],
+      "id": "1b169f3a-efff-4b3a-9f6e-b2e08c9099b1",
+      "name": "Answer Query a callback",
+      "webhookId": "bf06f553-68ab-47c8-9e79-326b442a425d",
+      "credentials": {
+        "telegramApi": {
+          "id": "Z2Mdiv1tA9IaMqFN",
+          "name": "telegram trigger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Obtener el callback_data enviado por Telegram\nconst callbackData = $json.callback_query?.data || '';\n\n// Dividir la cadena (Ejemplo: \"a_userId_STANDARD_trimestral\" o \"r_userId_STANDARD_trimestral\")\nconst parts = callbackData.split('_');\n\n// 1. Identificar la acción ('a' o 'aprobar' -> Aprobado | 'r' o 'rechazar' -> Rechazado)\nconst accionCodigo = (parts[0] || '').toLowerCase().replace(/[^a-z]/g, '');\nconst esAprobado = (accionCodigo === 'a' || accionCodigo === 'aprobar');\n\nconst accion = esAprobado ? 'aprobar' : 'rechazar';\n\n// Estado que irá a la base de datos\nconst status = esAprobado ? 'ACTIVE-PAID' : 'REJECTED';\n\n// 2. Extraer parámetros\nconst userId = parts[1] || '';\nconst plan = parts[2] || 'STANDARD';\nconst periodo = (parts[3] || 'MENSUAL').toUpperCase();\n\n// 3. Calcular la nueva fecha de vencimiento según el período\nconst ahora = new Date();\nlet diasAgregar = 30; // Por defecto mensual\n\nif (periodo === 'TRIMESTRAL') diasAgregar = 90;\nif (periodo === 'SEMESTRAL') diasAgregar = 180;\nif (periodo === 'ANUAL') diasAgregar = 365;\n\nahora.setDate(ahora.getDate() + diasAgregar);\n\n// Formatear fecha limpia para el correo (ej. \"15 de noviembre de 2026\")\nconst opcionesFecha = { year: 'numeric', month: 'long', day: 'numeric' };\nconst fechaLegible = ahora.toLocaleDateString('es-ES', opcionesFecha);\n\nreturn {\n  accion: accion,\n  userId: userId,\n  plan: plan,\n  periodo: periodo,\n  status: status,\n  trial_ends_at: ahora.toISOString(),\n  fecha_legible: fechaLegible\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        0
+      ],
+      "id": "754b7755-9ad6-459e-b06c-ad8be8c70987",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE usuarios\nSET \n  status = '{{ $('Code in JavaScript1').first().json.status }}',\n  trial_ends_at = '{{ $('Code in JavaScript1').first().json.trial_ends_at }}',\n  plan = '{{ $('Code in JavaScript1').first().json.plan }}'\nWHERE id = '{{ $('Code in JavaScript1').first().json.userId }}'\nRETURNING email, id, status, plan, trial_ends_at;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.7,
+      "position": [
+        752,
+        -112
+      ],
+      "id": "b04aab71-cf5e-467f-9df0-f876c6bddd82",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "iJYwy1fBjjOBKndW",
+          "name": "Postgres Licitacoines"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"received\",\n  \"message\": \"Solicitud recibida; transacción en proceso.\"\n}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json; charset=utf-8"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        320,
+        -208
+      ],
+      "id": "e49501d1-86dc-40b1-aa5f-1a422154f6a1",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "usuarios",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $json.userId }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        304,
+        0
+      ],
+      "id": "2c1edafb-ce03-493d-963f-7760fc3be12d",
+      "name": "Get a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "uc3lfzmHZOvjm4Eu",
+          "name": "Supabase Licitaciones"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "875abc1a-b39f-4813-a530-64a444b061f0",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "ACTIVE-PAID",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        512,
+        0
+      ],
+      "id": "43bc7975-7793-4dc8-b445-6ddeb4320f34",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "resource": "callback",
+        "queryId": "={{ $('Telegram Trigger').first().json.callback_query.id }}",
+        "additionalFields": {
+          "show_alert": true,
+          "text": "  Este registro ya fue procesado anteriormente"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        752,
+        112
+      ],
+      "id": "4276f6f1-6a46-4003-88be-7d4e3884a271",
+      "name": "Answer Query a callback1",
+      "webhookId": "634d0bb5-e6f3-4121-85b8-647b22479030",
+      "credentials": {
+        "telegramApi": {
+          "id": "Z2Mdiv1tA9IaMqFN",
+          "name": "telegram trigger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "94a910bb-3d55-40a0-a955-e677d862e8e8",
+              "leftValue": "={{ $('Code in JavaScript1').first().json.accion }}",
+              "rightValue": "aprobar",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1104,
+        -112
+      ],
+      "id": "7cb4be23-74ab-47ad-a721-b61a5f3fc9fa",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "fromEmail": "Licitaciones VNZLA <rafaeljgomezg@gmail.com>",
+        "toEmail": "={{ $('Get a row').first().json.email }}",
+        "subject": "¡Pago confirmado! Tu suscripción a Licitaciones Venezuela está activa =€",
+        "html": "=<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff;\">\n  \n  <h2 style=\"color: #166534; text-align: center; margin-top: 0;\">¡Pago Confirmado con Éxito! <‰</h2>\n  \n  <p style=\"color: #334155; font-size: 15px;\">Hola,</p>\n  \n  <p style=\"color: #334155; font-size: 15px; line-height: 1.5;\">\n    Hemos recibido y procesado correctamente tu pago. Tu suscripción a <strong>Licitaciones Venezuela</strong> se encuentra activa en el <strong>Plan {{ $('Code in JavaScript1').item.json.plan }}</strong> (Modalidad: {{ $('Code in JavaScript1').item.json.periodo }} }}).\n  </p>\n\n  <div style=\"background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 15px; margin: 20px 0;\">\n    <h3 style=\"margin-top: 0; color: #166534; font-size: 15px;\">Detalles de la Suscripción:</h3>\n    <ul style=\"font-size: 14px; color: #374151; margin: 0; padding-left: 20px; line-height: 1.6;\">\n      <li><strong>Estado:</strong> Activo / Pagado</li>\n      <li><strong>Plan Contratado: {{ $('Code in JavaScript1').item.json.plan }}</strong> </li>\n      <li><strong>Próxima renovación: {{ $('Code in JavaScript1').item.json.fecha_legible }}</strong> </li>\n    </ul>\n  </div>\n\n  <p style=\"color: #334155; font-size: 15px; line-height: 1.5;\">\n    A partir de este momento seguirás recibiendo de forma regular en tu bandeja de entrada los reportes diarios con las mejores contrataciones públicas según tus sectores de preferencia.\n  </p>\n\n  <hr style=\"border: none; border-top: 1px solid #e2e8f0; margin: 25px 0;\" />\n\n  <p style=\"font-size: 12px; color: #94a3b8; text-align: center; margin-bottom: 0;\">\n    Si necesitas soporte adicional o modificar tus áreas de interés, puedes responder directamente a este correo.<br>\n    Licitaciones Venezuela © 2026\n  </p>\n\n</div>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1376,
+        -272
+      ],
+      "id": "b1d87d54-a758-4200-924c-ff1d7a6fdd45",
+      "name": "EMAIL EXITO",
+      "webhookId": "7d229ec9-043f-4d3c-b66b-e179d2e7a2be",
+      "credentials": {
+        "smtp": {
+          "id": "8sJSX0mI8cnOgkel",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "Licitaciones VNZLA <rafaeljgomezg@gmail.com>",
+        "toEmail": "={{ $('Get a row').first().json.email }}",
+        "subject": "¡Pago Rechazado! Tu suscripción a Licitaciones Venezuela sigue pendiente =€",
+        "html": "=<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Notificación sobre tu Pago</title>\n</head>\n<body style=\"font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333333;\">\n\n  <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #e0e0e0;\">\n    \n    <!-- Encabezado Rojo/Advertencia -->\n    <tr>\n      <td align=\"center\" style=\"background-color: #991b1b; padding: 30px 20px;\">\n        <h1 style=\"color: #ffffff; margin: 0; font-size: 22px; font-weight: bold;\">  No pudimos procesar tu pago</h1>\n      </td>\n    </tr>\n\n    <!-- Cuerpos de texto -->\n    <tr>\n      <td style=\"padding: 30px 25px;\">\n        <p style=\"font-size: 16px; line-height: 1.5; margin-top: 0;\">Hola,</p>\n        \n        <p style=\"font-size: 15px; line-height: 1.6; color: #4b5563;\">\n          Te informamos que el reporte de pago enviado para tu suscripción a <strong>Licitaciones Venezuela</strong> no pudo ser verificado con éxito y ha sido <strong>rechazado</strong>.\n        </p>\n\n        <!-- Tarjeta de Advertencia / Instrucciones -->\n        <div style=\"background-color: #fef2f2; border-left: 4px solid #ef4444; padding: 20px; border-radius: 6px; margin: 25px 0;\">\n          <h3 style=\"margin-top: 0; color: #991b1b; font-size: 16px; margin-bottom: 12px;\">¿Qué debes hacer ahora?</h3>\n          <ul style=\"margin: 0; padding-left: 20px; color: #374151; font-size: 14px; line-height: 1.8;\">\n            <li>Si crees que se trata de un error del sistema o de verificación, puedes <strong>intentar realizar el reporte nuevamente</strong> desde la plataforma web.</li>\n            <li>Si ya realizaste la transferencia o pago, por favor <strong>responde directamente a este correo adjuntando el comprobante de pago o captura de pantalla</strong> para que nuestro equipo de soporte pueda revisarlo manualmente.</li>\n          </ul>\n        </div>\n\n        <p style=\"font-size: 15px; line-height: 1.6; color: #4b5563;\">\n          Estamos atentos a tu respuesta para ayudarte a activar tu cuenta lo antes posible.\n        </p>\n      </td>\n    </tr>\n\n    <!-- Pie de página -->\n    <tr>\n      <td align=\"center\" style=\"background-color: #f9fafb; padding: 20px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #9ca3af;\">\n        Soporte y Atención al Cliente<br>\n        <strong>Licitaciones Venezuela © 2026</strong>[cite: 3]\n      </td>\n    </tr>\n\n  </table>\n\n</body>\n</html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1376,
+        -16
+      ],
+      "id": "d2b5f015-ad23-4c08-bbbb-8b9ce9e2add5",
+      "name": "EMAIL REJECTED",
+      "webhookId": "7d229ec9-043f-4d3c-b66b-e179d2e7a2be",
+      "credentials": {
+        "smtp": {
+          "id": "8sJSX0mI8cnOgkel",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer Query a callback": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Get a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Answer Query a callback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a row": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Answer Query a callback1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "EMAIL EXITO",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "EMAIL REJECTED",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EMAIL EXITO": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "nodeGroups": [],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "vdZzgMGEWXkNeQqY",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "timezone": "America/Caracas"
+  },
+  "staticData": null,
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
+  "shared": [
+    {
+      "role": "workflow:owner",
+      "workflowId": "ijdxChfEUTmfdDi4",
+      "projectId": "TgZejVKOlIvkpozD",
+      "createdAt": "2026-10-10T22:02:06.479Z",
+      "updatedAt": "2026-10-10T22:02:06.479Z"
+    }
+  ],
+  "activeVersion": {
+    "versionId": "e7251688-0a44-44cd-8c46-d5bd1dfff3c3",
+    "workflowId": "ijdxChfEUTmfdDi4",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "pago-exitoso",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          -128,
+          -208
+        ],
+        "id": "d380dd80-b53c-4e69-8d29-ec5131df68c2",
+        "name": "Webhook",
+        "webhookId": "36a081bc-8115-4f60-a55d-d7af08e6b641"
+      },
+      {
+        "parameters": {
+          "chatId": "8252799232",
+          "text": "== *Nuevo pago reportado por verificar*  - *ID Usuario:* {{ $json.body.UserID }} - *Plan:* {{ $json.body.plan }} - *Método:* {{ $json.body.metodo }}. Haz clic en el botón correspondiente para aprobar o rechazar:",
+          "replyMarkup": "inlineKeyboard",
+          "inlineKeyboard": {
+            "rows": [
+              {
+                "row": {
+                  "buttons": [
+                    {
+                      "text": " Aprobar Pago",
+                      "additionalFields": {
+                        "callback_data": "=={{ \"a_\" + $json.body.UserID + \"_\" + $json.body.plan + \"_\" + $json.body.periodo }}"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "row": {
+                  "buttons": [
+                    {
+                      "text": "L Rechazar",
+                      "additionalFields": {
+                        "callback_data": "=={{ \"r_\" + $json.body.UserID + \"_\" + $json.body.plan + \"_\" + $json.body.periodo }}"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "additionalFields": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          96,
+          -208
+        ],
+        "id": "fbb33af3-d534-4488-b405-50f8105761b2",
+        "name": "Send a text message",
+        "webhookId": "cef7266b-522e-40e1-9461-88f56e788865",
+        "credentials": {
+          "telegramApi": {
+            "id": "Z2Mdiv1tA9IaMqFN",
+            "name": "telegram trigger"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "updates": [
+            "callback_query"
+          ],
+          "additionalFields": {}
+        },
+        "type": "n8n-nodes-base.telegramTrigger",
+        "typeVersion": 1.5,
+        "position": [
+          -128,
+          0
+        ],
+        "id": "0d7c3dc1-e448-477e-bfda-0af742caa134",
+        "name": "Telegram Trigger",
+        "webhookId": "e03a3257-bebb-418e-8817-7abfa45feb39",
+        "credentials": {
+          "telegramApi": {
+            "id": "Z2Mdiv1tA9IaMqFN",
+            "name": "telegram trigger"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "callback",
+          "queryId": "={{ $('Telegram Trigger').first().json.callback_query.id }}",
+          "additionalFields": {
+            "show_alert": true,
+            "text": " Solicitud procesada exitosamente y usuario notificado."
+          }
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          944,
+          -112
+        ],
+        "id": "1b169f3a-efff-4b3a-9f6e-b2e08c9099b1",
+        "name": "Answer Query a callback",
+        "webhookId": "bf06f553-68ab-47c8-9e79-326b442a425d",
+        "credentials": {
+          "telegramApi": {
+            "id": "Z2Mdiv1tA9IaMqFN",
+            "name": "telegram trigger"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "// Obtener el callback_data enviado por Telegram\nconst callbackData = $json.callback_query?.data || '';\n\n// Dividir la cadena (Ejemplo: \"a_userId_STANDARD_trimestral\" o \"r_userId_STANDARD_trimestral\")\nconst parts = callbackData.split('_');\n\n// 1. Identificar la acción ('a' o 'aprobar' -> Aprobado | 'r' o 'rechazar' -> Rechazado)\nconst accionCodigo = (parts[0] || '').toLowerCase().replace(/[^a-z]/g, '');\nconst esAprobado = (accionCodigo === 'a' || accionCodigo === 'aprobar');\n\nconst accion = esAprobado ? 'aprobar' : 'rechazar';\n\n// Estado que irá a la base de datos\nconst status = esAprobado ? 'ACTIVE-PAID' : 'REJECTED';\n\n// 2. Extraer parámetros\nconst userId = parts[1] || '';\nconst plan = parts[2] || 'STANDARD';\nconst periodo = (parts[3] || 'MENSUAL').toUpperCase();\n\n// 3. Calcular la nueva fecha de vencimiento según el período\nconst ahora = new Date();\nlet diasAgregar = 30; // Por defecto mensual\n\nif (periodo === 'TRIMESTRAL') diasAgregar = 90;\nif (periodo === 'SEMESTRAL') diasAgregar = 180;\nif (periodo === 'ANUAL') diasAgregar = 365;\n\nahora.setDate(ahora.getDate() + diasAgregar);\n\n// Formatear fecha limpia para el correo (ej. \"15 de noviembre de 2026\")\nconst opcionesFecha = { year: 'numeric', month: 'long', day: 'numeric' };\nconst fechaLegible = ahora.toLocaleDateString('es-ES', opcionesFecha);\n\nreturn {\n  accion: accion,\n  userId: userId,\n  plan: plan,\n  periodo: periodo,\n  status: status,\n  trial_ends_at: ahora.toISOString(),\n  fecha_legible: fechaLegible\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          80,
+          0
+        ],
+        "id": "754b7755-9ad6-459e-b06c-ad8be8c70987",
+        "name": "Code in JavaScript1"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "UPDATE usuarios\nSET \n  status = '{{ $('Code in JavaScript1').first().json.status }}',\n  trial_ends_at = '{{ $('Code in JavaScript1').first().json.trial_ends_at }}',\n  plan = '{{ $('Code in JavaScript1').first().json.plan }}'\nWHERE id = '{{ $('Code in JavaScript1').first().json.userId }}'\nRETURNING email, id, status, plan, trial_ends_at;",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.7,
+        "position": [
+          752,
+          -112
+        ],
+        "id": "b04aab71-cf5e-467f-9df0-f876c6bddd82",
+        "name": "Execute a SQL query",
+        "credentials": {
+          "postgres": {
+            "id": "iJYwy1fBjjOBKndW",
+            "name": "Postgres Licitacoines"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "={\n  \"status\": \"received\",\n  \"message\": \"Solicitud recibida; transacción en proceso.\"\n}",
+          "options": {
+            "responseCode": 200,
+            "responseHeaders": {
+              "entries": [
+                {
+                  "name": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                }
+              ]
+            }
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.5,
+        "position": [
+          320,
+          -208
+        ],
+        "id": "e49501d1-86dc-40b1-aa5f-1a422154f6a1",
+        "name": "Respond to Webhook"
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "tableId": "usuarios",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id",
+                "keyValue": "={{ $json.userId }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          304,
+          0
+        ],
+        "id": "2c1edafb-ce03-493d-963f-7760fc3be12d",
+        "name": "Get a row",
+        "credentials": {
+          "supabaseApi": {
+            "id": "uc3lfzmHZOvjm4Eu",
+            "name": "Supabase Licitaciones"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "875abc1a-b39f-4813-a530-64a444b061f0",
+                "leftValue": "={{ $json.status }}",
+                "rightValue": "ACTIVE-PAID",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEquals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          512,
+          0
+        ],
+        "id": "43bc7975-7793-4dc8-b445-6ddeb4320f34",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "resource": "callback",
+          "queryId": "={{ $('Telegram Trigger').first().json.callback_query.id }}",
+          "additionalFields": {
+            "show_alert": true,
+            "text": "  Este registro ya fue procesado anteriormente"
+          }
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          752,
+          112
+        ],
+        "id": "4276f6f1-6a46-4003-88be-7d4e3884a271",
+        "name": "Answer Query a callback1",
+        "webhookId": "634d0bb5-e6f3-4121-85b8-647b22479030",
+        "credentials": {
+          "telegramApi": {
+            "id": "Z2Mdiv1tA9IaMqFN",
+            "name": "telegram trigger"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "94a910bb-3d55-40a0-a955-e677d862e8e8",
+                "leftValue": "={{ $('Code in JavaScript1').first().json.accion }}",
+                "rightValue": "aprobar",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          1104,
+          -112
+        ],
+        "id": "7cb4be23-74ab-47ad-a721-b61a5f3fc9fa",
+        "name": "If1"
+      },
+      {
+        "parameters": {
+          "fromEmail": "Licitaciones VNZLA <rafaeljgomezg@gmail.com>",
+          "toEmail": "={{ $('Get a row').first().json.email }}",
+          "subject": "¡Pago confirmado! Tu suscripción a Licitaciones Venezuela está activa =€",
+          "html": "=<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff;\">\n  \n  <h2 style=\"color: #166534; text-align: center; margin-top: 0;\">¡Pago Confirmado con Éxito! <‰</h2>\n  \n  <p style=\"color: #334155; font-size: 15px;\">Hola,</p>\n  \n  <p style=\"color: #334155; font-size: 15px; line-height: 1.5;\">\n    Hemos recibido y procesado correctamente tu pago. Tu suscripción a <strong>Licitaciones Venezuela</strong> se encuentra activa en el <strong>Plan {{ $('Code in JavaScript1').item.json.plan }}</strong> (Modalidad: {{ $('Code in JavaScript1').item.json.periodo }} }}).\n  </p>\n\n  <div style=\"background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 15px; margin: 20px 0;\">\n    <h3 style=\"margin-top: 0; color: #166534; font-size: 15px;\">Detalles de la Suscripción:</h3>\n    <ul style=\"font-size: 14px; color: #374151; margin: 0; padding-left: 20px; line-height: 1.6;\">\n      <li><strong>Estado:</strong> Activo / Pagado</li>\n      <li><strong>Plan Contratado: {{ $('Code in JavaScript1').item.json.plan }}</strong> </li>\n      <li><strong>Próxima renovación: {{ $('Code in JavaScript1').item.json.fecha_legible }}</strong> </li>\n    </ul>\n  </div>\n\n  <p style=\"color: #334155; font-size: 15px; line-height: 1.5;\">\n    A partir de este momento seguirás recibiendo de forma regular en tu bandeja de entrada los reportes diarios con las mejores contrataciones públicas según tus sectores de preferencia.\n  </p>\n\n  <hr style=\"border: none; border-top: 1px solid #e2e8f0; margin: 25px 0;\" />\n\n  <p style=\"font-size: 12px; color: #94a3b8; text-align: center; margin-bottom: 0;\">\n    Si necesitas soporte adicional o modificar tus áreas de interés, puedes responder directamente a este correo.<br>\n    Licitaciones Venezuela © 2026\n  </p>\n\n</div>",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 2.1,
+        "position": [
+          1376,
+          -272
+        ],
+        "id": "b1d87d54-a758-4200-924c-ff1d7a6fdd45",
+        "name": "EMAIL EXITO",
+        "webhookId": "7d229ec9-043f-4d3c-b66b-e179d2e7a2be",
+        "credentials": {
+          "smtp": {
+            "id": "8sJSX0mI8cnOgkel",
+            "name": "SMTP account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "fromEmail": "Licitaciones VNZLA <rafaeljgomezg@gmail.com>",
+          "toEmail": "={{ $('Get a row').first().json.email }}",
+          "subject": "¡Pago Rechazado! Tu suscripción a Licitaciones Venezuela sigue pendiente =€",
+          "html": "=<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Notificación sobre tu Pago</title>\n</head>\n<body style=\"font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333333;\">\n\n  <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #e0e0e0;\">\n    \n    <!-- Encabezado Rojo/Advertencia -->\n    <tr>\n      <td align=\"center\" style=\"background-color: #991b1b; padding: 30px 20px;\">\n        <h1 style=\"color: #ffffff; margin: 0; font-size: 22px; font-weight: bold;\">  No pudimos procesar tu pago</h1>\n      </td>\n    </tr>\n\n    <!-- Cuerpos de texto -->\n    <tr>\n      <td style=\"padding: 30px 25px;\">\n        <p style=\"font-size: 16px; line-height: 1.5; margin-top: 0;\">Hola,</p>\n        \n        <p style=\"font-size: 15px; line-height: 1.6; color: #4b5563;\">\n          Te informamos que el reporte de pago enviado para tu suscripción a <strong>Licitaciones Venezuela</strong> no pudo ser verificado con éxito y ha sido <strong>rechazado</strong>.\n        </p>\n\n        <!-- Tarjeta de Advertencia / Instrucciones -->\n        <div style=\"background-color: #fef2f2; border-left: 4px solid #ef4444; padding: 20px; border-radius: 6px; margin: 25px 0;\">\n          <h3 style=\"margin-top: 0; color: #991b1b; font-size: 16px; margin-bottom: 12px;\">¿Qué debes hacer ahora?</h3>\n          <ul style=\"margin: 0; padding-left: 20px; color: #374151; font-size: 14px; line-height: 1.8;\">\n            <li>Si crees que se trata de un error del sistema o de verificación, puedes <strong>intentar realizar el reporte nuevamente</strong> desde la plataforma web.</li>\n            <li>Si ya realizaste la transferencia o pago, por favor <strong>responde directamente a este correo adjuntando el comprobante de pago o captura de pantalla</strong> para que nuestro equipo de soporte pueda revisarlo manualmente.</li>\n          </ul>\n        </div>\n\n        <p style=\"font-size: 15px; line-height: 1.6; color: #4b5563;\">\n          Estamos atentos a tu respuesta para ayudarte a activar tu cuenta lo antes posible.\n        </p>\n      </td>\n    </tr>\n\n    <!-- Pie de página -->\n    <tr>\n      <td align=\"center\" style=\"background-color: #f9fafb; padding: 20px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #9ca3af;\">\n        Soporte y Atención al Cliente<br>\n        <strong>Licitaciones Venezuela © 2026</strong>[cite: 3]\n      </td>\n    </tr>\n\n  </table>\n\n</body>\n</html>",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 2.1,
+        "position": [
+          1376,
+          -16
+        ],
+        "id": "d2b5f015-ad23-4c08-bbbb-8b9ce9e2add5",
+        "name": "EMAIL REJECTED",
+        "webhookId": "7d229ec9-043f-4d3c-b66b-e179d2e7a2be",
+        "credentials": {
+          "smtp": {
+            "id": "8sJSX0mI8cnOgkel",
+            "name": "SMTP account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Send a text message",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send a text message": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Telegram Trigger": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Answer Query a callback": {
+        "main": [
+          [
+            {
+              "node": "If1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript1": {
+        "main": [
+          [
+            {
+              "node": "Get a row",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute a SQL query": {
+        "main": [
+          [
+            {
+              "node": "Answer Query a callback",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get a row": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Execute a SQL query",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Answer Query a callback1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If1": {
+        "main": [
+          [
+            {
+              "node": "EMAIL EXITO",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "EMAIL REJECTED",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "EMAIL EXITO": {
+        "main": [
+          []
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "RAFAEL GOMEZ GARCIA",
+    "name": "Version e7251688",
+    "description": "",
+    "autosaved": true,
+    "createdAt": "2026-10-17T14:43:24.283Z",
+    "updatedAt": "2026-10-17T14:43:26.000Z"
+  }
+}
