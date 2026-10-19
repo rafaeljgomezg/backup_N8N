@@ -1,0 +1,353 @@
+{
+  "id": "4HYdMcB1GOieXomS",
+  "name": "FeriasDeVagas",
+  "active": true,
+  "activeVersionId": "c33a7d60-5243-43fb-9c31-6c856f810c0b",
+  "createdAt": "2026-10-03T20:28:10.848Z",
+  "updatedAt": "2026-10-05T00:30:50.774Z",
+  "isArchived": false,
+  "versionId": "c33a7d60-5243-43fb-9c31-6c856f810c0b",
+  "triggerCount": 1,
+  "nodes": [
+    {
+      "parameters": {
+        "actorSource": "store",
+        "actorId": {
+          "__rl": true,
+          "value": "shu8hvrXbJbY3Eb9W",
+          "mode": "list",
+          "cachedResultName": "Instagram Scraper (apify/instagram-scraper)",
+          "cachedResultUrl": "https://console.apify.com/actors/shu8hvrXbJbY3Eb9W/input"
+        },
+        "customBody": "={\n\"directUrls\": [\n    \"https://www.instagram.com/cascavel_prefa/\",\n    \"https://www.instagram.com/aciccascavel/\",\n    \"https://www.instagram.com/marlene.crivelari/\"\n  ],\n  \"resultsLimit\": 5\n}",
+        "memory": 512
+      },
+      "type": "@apify/n8n-nodes-apify.apify",
+      "typeVersion": 2,
+      "position": [
+        -368,
+        -96
+      ],
+      "id": "429e1f4e-d9c8-4590-a488-b98f812a5d50",
+      "name": "Run an Actor",
+      "credentials": {
+        "apifyApi": {
+          "id": "klOxzhLKf97wpcvE",
+          "name": "Apify account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.output.dataset }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -144,
+        -96
+      ],
+      "id": "2e59c8c2-76c0-48f6-b7e0-64bdb5dc240a",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst today = new Date();\ntoday.setHours(0, 0, 0, 0); // Normalizar a medianoche\n\n// Palabras clave para detectar empleo, ferias o procesos de selección\nconst keywordsEmpleo = [\n  \"emprego\", \"vaga\", \"vagas\", \"oportunidade\", \"oportunidades\", \n  \"processo seletivo\", \"contratando\", \"trabalho\", \"curriculum\", \n  \"currículo\", \"feira\", \"mutirão\", \"entrevista\", \n  \"balcão do trabalhador\", \"agência do trabalhador\"\n];\n\nlet feriasProximas = [];\n\nfor (const item of items) {\n  // Capturamos el texto de la publicación\n  const textoPost = (item.json.caption || item.json.text || item.json.description || \"\").toLowerCase();\n  \n  // Verificamos si el texto menciona algo relacionado a empleo o ferias\n  const esDeEmpleo = keywordsEmpleo.some(keyword => textoPost.includes(keyword));\n\n  if (esDeEmpleo) {\n    // Buscamos la fecha en los campos típicos que devuelve Apify para Instagram\n    const rawDate = item.json.timestamp || item.json.date || item.json.pubDate || item.json.createdAt; \n    const nombreFeria = item.json.caption ? item.json.caption.substring(0, 60) + \"...\" : \"Oportunidad de Empleo\";\n    const enlaceFeria = item.json.url || item.json.link || \"\";\n\n    if (rawDate) {\n      const feriaDate = new Date(rawDate);\n      \n      // Validar si la fecha es válida y si es futura o de hoy\n      if (!isNaN(feriaDate.getTime()) && feriaDate >= today) {\n        feriasProximas.push({\n          nombre: nombreFeria,\n          fecha: feriaDate,\n          fechaStr: feriaDate.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' }),\n          url: enlaceFeria\n        });\n      }\n    }\n  }\n}\n\n// Ordenar por fecha más cercana\nferiasProximas.sort((a, b) => a.fecha - b.fecha);\n\n// Si no hay ferias o vacantes próximas que coincidan\nif (feriasProximas.length === 0) {\n  return [{ json: { mensajeAlerta: \"= Monitoreo activo: Se revisaron las publicaciones recientes de Cascavel y ACIC, pero aún no hay convocatorias de empleo nuevas.\" } }];\n}\n\n// Construir un mensaje unificado y limpio\nlet mensaje = \"=¨ *¡Nuevas Ferias / Vacantes de Empleo Detectadas!* =¨\\n\\n\";\nferiasProximas.forEach((f, index) => {\n  mensaje += `*${index + 1}. ${f.nombre}*\\n`;\n  mensaje += `=Å Fecha: ${f.fechaStr}\\n`;\n  if (f.url) mensaje += `= Más info: ${f.url}\\n`;\n  mensaje += `-------------------\\n`;\n});\n\nreturn [{ json: { mensajeAlerta: mensaje } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        -96
+      ],
+      "id": "4f0c7a0b-4faf-4b74-a1c9-d0203bc65927",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "fromEmail": "rafaeljgomezg@gmail.com",
+        "toEmail": "raspalobrasil@gmail.com",
+        "subject": "=¨ Nuevas ofertas de empleo detectadas - Cascavel",
+        "html": "={{ $json.mensajeAlerta }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        272,
+        -96
+      ],
+      "id": "091e304c-a8f5-47de-8290-d9e2ef279863",
+      "name": "Send an Email",
+      "webhookId": "d37fee2b-50da-4b24-a533-7981154a8cdb",
+      "credentials": {
+        "smtp": {
+          "id": "8sJSX0mI8cnOgkel",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1,
+                4
+              ],
+              "triggerAtHour": 12
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -592,
+        -96
+      ],
+      "id": "f0cdab14-55fc-4278-9369-55e5ce403c1e",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "connections": {
+    "Run an Actor": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Run an Actor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "nodeGroups": [],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": [
+        null
+      ],
+      "recurrenceRuleSignatures": [
+        null
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
+  "shared": [
+    {
+      "role": "workflow:owner",
+      "workflowId": "4HYdMcB1GOieXomS",
+      "projectId": "TgZejVKOlIvkpozD",
+      "createdAt": "2026-10-03T20:28:10.859Z",
+      "updatedAt": "2026-10-03T20:28:10.859Z"
+    }
+  ],
+  "activeVersion": {
+    "versionId": "c33a7d60-5243-43fb-9c31-6c856f810c0b",
+    "workflowId": "4HYdMcB1GOieXomS",
+    "nodes": [
+      {
+        "parameters": {
+          "actorSource": "store",
+          "actorId": {
+            "__rl": true,
+            "value": "shu8hvrXbJbY3Eb9W",
+            "mode": "list",
+            "cachedResultName": "Instagram Scraper (apify/instagram-scraper)",
+            "cachedResultUrl": "https://console.apify.com/actors/shu8hvrXbJbY3Eb9W/input"
+          },
+          "customBody": "={\n\"directUrls\": [\n    \"https://www.instagram.com/cascavel_prefa/\",\n    \"https://www.instagram.com/aciccascavel/\",\n    \"https://www.instagram.com/marlene.crivelari/\"\n  ],\n  \"resultsLimit\": 5\n}",
+          "memory": 512
+        },
+        "type": "@apify/n8n-nodes-apify.apify",
+        "typeVersion": 2,
+        "position": [
+          -368,
+          -96
+        ],
+        "id": "429e1f4e-d9c8-4590-a488-b98f812a5d50",
+        "name": "Run an Actor",
+        "credentials": {
+          "apifyApi": {
+            "id": "klOxzhLKf97wpcvE",
+            "name": "Apify account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "url": "={{ $json.output.dataset }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          -144,
+          -96
+        ],
+        "id": "2e59c8c2-76c0-48f6-b7e0-64bdb5dc240a",
+        "name": "HTTP Request"
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\nconst today = new Date();\ntoday.setHours(0, 0, 0, 0); // Normalizar a medianoche\n\n// Palabras clave para detectar empleo, ferias o procesos de selección\nconst keywordsEmpleo = [\n  \"emprego\", \"vaga\", \"vagas\", \"oportunidade\", \"oportunidades\", \n  \"processo seletivo\", \"contratando\", \"trabalho\", \"curriculum\", \n  \"currículo\", \"feira\", \"mutirão\", \"entrevista\", \n  \"balcão do trabalhador\", \"agência do trabalhador\"\n];\n\nlet feriasProximas = [];\n\nfor (const item of items) {\n  // Capturamos el texto de la publicación\n  const textoPost = (item.json.caption || item.json.text || item.json.description || \"\").toLowerCase();\n  \n  // Verificamos si el texto menciona algo relacionado a empleo o ferias\n  const esDeEmpleo = keywordsEmpleo.some(keyword => textoPost.includes(keyword));\n\n  if (esDeEmpleo) {\n    // Buscamos la fecha en los campos típicos que devuelve Apify para Instagram\n    const rawDate = item.json.timestamp || item.json.date || item.json.pubDate || item.json.createdAt; \n    const nombreFeria = item.json.caption ? item.json.caption.substring(0, 60) + \"...\" : \"Oportunidad de Empleo\";\n    const enlaceFeria = item.json.url || item.json.link || \"\";\n\n    if (rawDate) {\n      const feriaDate = new Date(rawDate);\n      \n      // Validar si la fecha es válida y si es futura o de hoy\n      if (!isNaN(feriaDate.getTime()) && feriaDate >= today) {\n        feriasProximas.push({\n          nombre: nombreFeria,\n          fecha: feriaDate,\n          fechaStr: feriaDate.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' }),\n          url: enlaceFeria\n        });\n      }\n    }\n  }\n}\n\n// Ordenar por fecha más cercana\nferiasProximas.sort((a, b) => a.fecha - b.fecha);\n\n// Si no hay ferias o vacantes próximas que coincidan\nif (feriasProximas.length === 0) {\n  return [{ json: { mensajeAlerta: \"= Monitoreo activo: Se revisaron las publicaciones recientes de Cascavel y ACIC, pero aún no hay convocatorias de empleo nuevas.\" } }];\n}\n\n// Construir un mensaje unificado y limpio\nlet mensaje = \"=¨ *¡Nuevas Ferias / Vacantes de Empleo Detectadas!* =¨\\n\\n\";\nferiasProximas.forEach((f, index) => {\n  mensaje += `*${index + 1}. ${f.nombre}*\\n`;\n  mensaje += `=Å Fecha: ${f.fechaStr}\\n`;\n  if (f.url) mensaje += `= Más info: ${f.url}\\n`;\n  mensaje += `-------------------\\n`;\n});\n\nreturn [{ json: { mensajeAlerta: mensaje } }];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          80,
+          -96
+        ],
+        "id": "4f0c7a0b-4faf-4b74-a1c9-d0203bc65927",
+        "name": "Code in JavaScript"
+      },
+      {
+        "parameters": {
+          "fromEmail": "rafaeljgomezg@gmail.com",
+          "toEmail": "raspalobrasil@gmail.com",
+          "subject": "=¨ Nuevas ofertas de empleo detectadas - Cascavel",
+          "html": "={{ $json.mensajeAlerta }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 2.1,
+        "position": [
+          272,
+          -96
+        ],
+        "id": "091e304c-a8f5-47de-8290-d9e2ef279863",
+        "name": "Send an Email",
+        "webhookId": "d37fee2b-50da-4b24-a533-7981154a8cdb",
+        "credentials": {
+          "smtp": {
+            "id": "8sJSX0mI8cnOgkel",
+            "name": "SMTP account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "weeks",
+                "triggerAtDay": [
+                  1,
+                  4
+                ],
+                "triggerAtHour": 12
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.4,
+        "position": [
+          -592,
+          -96
+        ],
+        "id": "f0cdab14-55fc-4278-9369-55e5ce403c1e",
+        "name": "Schedule Trigger"
+      }
+    ],
+    "connections": {
+      "Run an Actor": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript": {
+        "main": [
+          [
+            {
+              "node": "Send an Email",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Run an Actor",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "RAFAEL GOMEZ GARCIA",
+    "name": "Version c33a7d60",
+    "description": "",
+    "autosaved": true,
+    "createdAt": "2026-10-04T02:00:27.055Z",
+    "updatedAt": "2026-10-04T02:00:40.000Z"
+  }
+}
