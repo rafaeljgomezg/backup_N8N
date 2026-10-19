@@ -1,0 +1,1010 @@
+{
+  "id": "ljNBfR8Sm9jfypfl",
+  "name": "LicitacionesEnvio",
+  "active": true,
+  "activeVersionId": "69be2ac6-bce1-4f3f-b36f-a31d2dcb7296",
+  "createdAt": "2026-10-08T19:35:43.607Z",
+  "updatedAt": "2026-10-19T14:01:07.090Z",
+  "isArchived": false,
+  "versionId": "69be2ac6-bce1-4f3f-b36f-a31d2dcb7296",
+  "triggerCount": 1,
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "usuarios",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "status",
+              "condition": "neq",
+              "keyValue": "CANCELED"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        -208
+      ],
+      "id": "d78dafa7-e42a-42d3-9e21-3813eb7763e3",
+      "name": "CargaUsuarios",
+      "executeOnce": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "uc3lfzmHZOvjm4Eu",
+          "name": "Supabase Licitaciones"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "=Licitaciones VNZLA <raspalobrasil@gmail.com>",
+        "toEmail": "={{ $json.email }}",
+        "subject": "\"Tu periodo de prueba ha finalizado  Activa tu acceso a Licitaciones Venezuela\"",
+        "html": "=<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Tu periodo de prueba ha finalizado</title>\n</head>\n<body style=\"font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333333;\">\n\n  <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #e0e0e0;\">\n    \n    <!-- Encabezado -->\n    <tr>\n      <td align=\"center\" style=\"background-color: #1e293b; padding: 30px 20px;\">\n        <h1 style=\"color: #ffffff; margin: 0; font-size: 22px; font-weight: bold;\">¡Tu periodo de prueba ha finalizado! =€</h1>\n      </td>\n    </tr>\n\n    <!-- Cuerpo del Mensaje -->\n    <tr>\n      <td style=\"padding: 30px 25px;\">\n        <p style=\"font-size: 16px; line-height: 1.5; margin-top: 0;\">Hola <strong>{{ $json.nombre || 'Usuario' }}</strong>,</p>\n        \n        <p style=\"font-size: 15px; line-height: 1.6; color: #4b5563;\">\n          Tus días de acceso gratuito a <strong>Licitaciones Venezuela</strong> han concluido. Para mantener activo tu servicio y continuar recibiendo los reportes diarios con las mejores oportunidades de contratación pública según tus sectores de interés, selecciona tu plan y modalidad de pago preferida.\n        </p>\n\n        <!-- Tarjeta Informativa / Destacada -->\n        <div style=\"background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; margin: 25px 0; text-align: center;\">\n          <p style=\"margin: 0 0 15px 0; font-size: 14px; color: #64748b;\">\n            Accede a nuestra plataforma segura para elegir entre planes <strong>Mensuales, Trimestrales, Semestrales o Anuales</strong> y pagar con <strong>Zinli, Binance Pay</strong> u otros métodos disponibles.\n          </p>\n          \n          <!-- Botón Principal hacia Netlify -->\n          <a href=\"https://lic-newuser.netlify.app/checkout?userId={{ $json.id }}\" target=\"_blank\" style=\"display: inline-block; background-color: #16a34a; color: #ffffff; font-size: 16px; font-weight: bold; text-decoration: none; padding: 14px 28px; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);\">\n            Renovar mi Suscripción Ahora =³\n          </a>\n        </div>\n\n        <p style=\"font-size: 14px; line-height: 1.5; color: #64748b; font-style: italic;\">\n          Nota: Una vez realizado el reporte en la plataforma, tu cuenta se reactivará automáticamente.\n        </p>\n      </td>\n    </tr>\n\n    <!-- Pie de página -->\n    <tr>\n      <td align=\"center\" style=\"background-color: #f9fafb; padding: 20px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #9ca3af;\">\n        Si tienes preguntas sobre los planes o métodos de pago, responde directamente a este correo.<br>\n        <strong>Licitaciones Venezuela © 2026</strong>\n      </td>\n    </tr>\n\n  </table>\n\n</body>\n</html>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        -256,
+        -432
+      ],
+      "id": "0ed1a743-44d7-4233-8309-d906a99b3d65",
+      "name": "Pendientes de Pago",
+      "webhookId": "33f8e145-3649-40d0-bdb2-934e46454855",
+      "credentials": {
+        "smtp": {
+          "id": "8sJSX0mI8cnOgkel",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "usuarios",
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "status",
+              "condition": "eq",
+              "keyValue": "TRIAL"
+            },
+            {
+              "keyName": "trial_ends_at",
+              "condition": "lt",
+              "keyValue": "={{ $now.toISO() }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "status",
+              "fieldValue": "PENDING"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -464,
+        -432
+      ],
+      "id": "ed199d29-d334-4571-a93c-173e664f3a3b",
+      "name": "PaymentPending_Check",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "uc3lfzmHZOvjm4Eu",
+          "name": "Supabase Licitaciones"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "licitaciones",
+        "limit": 150,
+        "filters": {
+          "conditions": []
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        -208
+      ],
+      "id": "3872e287-44b1-48f7-9d6e-b26d06889df3",
+      "name": "CargaLicitaciones",
+      "alwaysOutputData": false,
+      "credentials": {
+        "supabaseApi": {
+          "id": "uc3lfzmHZOvjm4Eu",
+          "name": "Supabase Licitaciones"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Obtener los datos de los nodos anteriores\nconst licitaciones = $('CargaLicitaciones').all().map(item => item.json);\nconst usuarios = $('CargaUsuarios').all().map(item => item.json);\n\n// 2. Obtener el histórico de envíos desde el nodo 'Leer Envios_log'\nlet enviosLog = [];\ntry {\n  enviosLog = $('Leer Envios_log').all().map(item => item.json);\n} catch (e) {\n  enviosLog = [];\n}\n\nconst resultado = [];\n\nfor (const usuario of usuarios) {\n  const sectoresUsuario = Array.isArray(usuario.sectores) ? usuario.sectores : [];\n  const estadosUsuario = Array.isArray(usuario.estados) ? usuario.estados : [];\n\n  // Obtener los proceso_id de las licitaciones que ESTE usuario ya recibió anteriormente\n  const licitacionesYaEnviadas = enviosLog\n    .filter(log => log.usuario_id === usuario.id)\n    .map(log => log.proceso_id); // =H Cambiado a proceso_id para que coincida con tu nueva estructura\n\n  // Filtrar licitaciones del día que:\n  // - Coincidan con el sector del usuario\n  // - Coincidan con el estado geográfico (si tiene estados configurados)\n  // - NO hayan sido enviadas previamente (evita duplicados)\n  const licitacionesValidas = licitaciones.filter(lic => {\n    const coincideSector = sectoresUsuario.includes(lic.sector);\n    const coincideEstado = estadosUsuario.length === 0 || estadosUsuario.includes(lic.estado);\n    const idProcesoActual = lic.proceso_id || lic.numero_proceso;\n    const yaFueEnviada = licitacionesYaEnviadas.includes(idProcesoActual);\n\n    return coincideSector && coincideEstado && !yaFueEnviada;\n  });\n\n  // Solo incluimos al usuario si tiene licitaciones nuevas para enviarle hoy\n  if (licitacionesValidas.length > 0) {\n    resultado.push({\n      json: {\n        ...usuario,\n        licitaciones: licitacionesValidas,\n        enviar_boletin: true\n      }\n    });\n  }\n}\n\nreturn resultado;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        112,
+        -208
+      ],
+      "id": "024453d6-d51f-4264-8197-8784d61981c0",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1,
+                2,
+                3,
+                4,
+                5
+              ],
+              "triggerAtHour": 12,
+              "triggerAtMinute": 15
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -656,
+        -208
+      ],
+      "id": "e1552cf5-2f45-4600-a637-c7a006e02ee8",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "fromEmail": "Licitaciones Vnzla <rafaeljgomezg@gmail.com>",
+        "toEmail": "={{ $json.email }}",
+        "subject": "=Licitaciones de Hoy {{ $today.toFormat('dd \\'de\\' MMMM \\'de\\' yyyy', { locale: 'es' }) }}",
+        "html": "={{ $json.boletin_html }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        672,
+        -64
+      ],
+      "id": "a1d53cae-924f-4c58-9934-1422f0b174cf",
+      "name": "Boletín Diario",
+      "webhookId": "9c4660f1-51c3-40e3-ba05-601eb17c9340",
+      "credentials": {
+        "smtp": {
+          "id": "8sJSX0mI8cnOgkel",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "envios_log",
+        "limit": 1000
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        -208
+      ],
+      "id": "042a3aa6-d37c-4aeb-8bc2-615c30d96e0f",
+      "name": "Leer Envios_log",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "uc3lfzmHZOvjm4Eu",
+          "name": "Supabase Licitaciones"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  const usuario = item.json;\n  const licitaciones = usuario.licitaciones || [];\n\n  let contenidoHtml = '';\n\n  if (licitaciones.length === 0) {\n    contenidoHtml = `\n      <div style=\"padding: 20px; text-align: center; background-color: #f8fafc; border-radius: 6px; color: #64748b; font-size: 13px;\">\n        No se encontraron nuevas licitaciones en tus sectores el día de hoy.\n      </div>\n    `;\n  } else {\n    // 1. Agrupar por Estado geográfico\n    const agrupadasPorEstado = {};\n    for (const lic of licitaciones) {\n      const estado = lic.estado || 'Nacional / Sin Especificar';\n      if (!agrupadasPorEstado[estado]) agrupadasPorEstado[estado] = [];\n      agrupadasPorEstado[estado].push(lic);\n    }\n\n    // 2. Generar el HTML agrupado\n    contenidoHtml = Object.keys(agrupadasPorEstado).map(nombreEstado => {\n      const listaLicitaciones = agrupadasPorEstado[nombreEstado];\n      \n      const tarjetas = listaLicitaciones.map(lic => {\n        const esModificada = lic.es_modificado === true;\n        const borderColor = esModificada ? '#ef4444' : '#e2e8f0';\n        const bgColor = esModificada ? '#fef2f2' : '#fafafa';\n        \n        const tagModificada = esModificada \n          ? `<span style=\"font-size: 11px; font-weight: bold; color: #ffffff; background-color: #ef4444; padding: 3px 8px; border-radius: 4px; margin-left: 6px;\">  PRÓRROGA / MODIFICADA</span>` \n          : '';\n\n        return `\n          <div style=\"border: 1px solid ${borderColor}; border-radius: 8px; padding: 16px; margin-bottom: 14px; background-color: ${bgColor}; text-align: left;\">\n            <div style=\"margin-bottom: 8px;\">\n              <span style=\"font-size: 12px; font-weight: bold; color: #2563eb; background-color: #dbeafe; padding: 4px 8px; border-radius: 4px; text-transform: uppercase;\">\n                ${lic.sector || 'General'}\n              </span>\n              ${tagModificada}\n            </div>\n\n            <h4 style=\"margin: 6px 0; font-size: 14px; color: #1e293b; font-weight: 600;\">\n              <Û ${lic.ente_nombre || lic.organismo || 'Organismo Público'}\n            </h4>\n\n            <p style=\"margin: 8px 0 12px 0; font-size: 13px; color: #334155; line-height: 1.4;\">\n              ${lic.descripcion_objeto || 'Sin descripción detallada'}\n            </p>\n\n            \n            <div style=\"border-top: 1px solid #f1f5f9; padding-top: 10px; margin-top: 10px; display: flex; align-items: center; justify-content: space-between;\">\n              \n              <!-- *********************\n              <span style=\"font-size: 12px; color: #64748b;\">\n                =Å Límite: <strong>${lic.fecha_recepcion_ofertas || lic.fecha_limite || 'Por definir'}</strong>\n              </span> \n              *********************** -->\n              \n              <a href=\"${lic.url_pliego || lic.url_publica || '#'}\" style=\"background-color: ${esModificada ? '#991b1b' : '#0f172a'}; color: #ffffff; padding: 6px 14px; text-decoration: none; border-radius: 5px; font-size: 12px; font-weight: bold; display: inline-block;\">\n                ${esModificada ? 'Ver Adenda / Cambio ’' : 'Ver detalle ’'}\n              </a>\n            </div>\n          </div>\n        `;\n      }).join('');\n\n      return `\n        <div style=\"margin-top: 24px; margin-bottom: 12px; border-bottom: 2px solid #2563eb; padding-bottom: 6px; text-align: left;\">\n          <h3 style=\"margin: 0; font-size: 15px; color: #1e293b; text-transform: uppercase; font-weight: 700;\">\n            =Í Estado: ${nombreEstado}\n          </h3>\n        </div>\n        ${tarjetas}\n      `;\n    }).join('');\n  }\n\n  // 3. Crear el HTML completo del boletín\n  item.json.boletin_html = `\n    <!DOCTYPE html>\n    <html>\n    <head>\n      <meta charset=\"utf-8\">\n      <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    </head>\n    <body style=\"font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f6f8; margin: 0; padding: 20px; color: #333333;\">\n      <div style=\"max-width: 680px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05);\">\n        \n        <div style=\"background-color: #0f172a; padding: 24px; text-align: left; color: #ffffff;\">\n          <h2 style=\"margin: 0; font-size: 20px; font-weight: 600;\"><û<ê Licitaciones Venezuela</h2>\n          <p style=\"margin: 6px 0 0 0; font-size: 13px; color: #94a3b8;\">Resumen diario de oportunidades de contratación pública</p>\n        </div>\n\n        <div style=\"padding: 24px 24px 12px 24px; text-align: left;\">\n          <p style=\"margin: 0 0 10px 0; font-size: 15px;\">Hola <strong>${usuario.nombre || 'Suscriptor'}</strong>,</p>\n          <p style=\"margin: 0; font-size: 14px; color: #475569; line-height: 1.5;\">\n            Hemos detectado <strong>${licitaciones.length} licitaciones</strong> publicadas hoy en tus sectores y regiones seleccionados:\n          </p>\n        </div>\n\n        <div style=\"padding: 12px 24px 24px 24px;\">\n          ${contenidoHtml}\n        </div>\n\n        <div style=\"background-color: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #e2e8f0; font-size: 12px; color: #64748b;\">\n          <p style=\"margin: 0 0 8px 0;\">¿Deseas ajustar las alertas que recibes?</p>\n          <p style=\"margin: 0;\">\n            <a href=\"https://somewhat-jones-marion-guru.trycloudflare.com/webhook/preferencias?token=${usuario.access_token}&action=update\" style=\"color: #2563eb; text-decoration: underline;\">Gestionar mis sectores</a>\n            &nbsp;|&nbsp;\n            <a href=\"https://somewhat-jones-marion-guru.trycloudflare.com/webhook/desuscripcion?token=${usuario.access_token}&action=cancel\" style=\"color: #ef4444; text-decoration: underline;\">Darse de baja</a>\n          </p>\n          <p style=\"margin-top: 12px; font-size: 11px; color: #94a3b8;\">Licitaciones Venezuela © 2026</p>\n        </div>\n\n      </div>\n    </body>\n    </html>\n  `;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        -64
+      ],
+      "id": "6d09b9fc-0541-402d-8d53-387a10261212",
+      "name": "Formatear HTML de Correo"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "envios_log",
+          "mode": "list",
+          "cachedResultName": "envios_log"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {
+            "usuario_id": "={{ $json.usuario_id }}",
+            "fecha_envio": "={{ $json.fecha_envio }}"
+          },
+          "matchingColumns": [
+            "usuario_id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "usuario_id",
+              "displayName": "usuario_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "proceso_id",
+              "displayName": "proceso_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "fecha_envio",
+              "displayName": "fecha_envio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.7,
+      "position": [
+        1008,
+        -64
+      ],
+      "id": "cb3c1fa7-ffb3-4713-88bf-e4e4cf2e5aa0",
+      "name": "Actualizar Envios_Log",
+      "credentials": {
+        "postgres": {
+          "id": "iJYwy1fBjjOBKndW",
+          "name": "Postgres Licitacoines"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const resultados = [];\n\nlet itemsBoletin = [];\ntry {\n  itemsBoletin = $('Code in JavaScript').all();\n} catch (e) {\n  itemsBoletin = $input.all();\n}\n\nfor (const item of itemsBoletin) {\n  const usuario = item.json;\n  const usuarioId = usuario.id || usuario.usuario_id;\n  \n  const licitaciones = usuario.licitaciones || [];\n\n  for (const lic of licitaciones) {\n    if (usuarioId && (lic.proceso_id || lic.numero_proceso)) {\n      resultados.push({\n        json: {\n          usuario_id: usuarioId,\n          proceso_id: lic.proceso_id || lic.numero_proceso, // =H Se guarda el código de proceso\n          fecha_envio: new Date().toISOString()\n        }\n      });\n    }\n  }\n}\n\nreturn resultados;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        832,
+        -64
+      ],
+      "id": "62cb0891-9684-4320-905a-68e53e424a16",
+      "name": "Consolidar licitaciones enviadas"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "e4abece3-56c9-4549-9a74-0bb7456b266e",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "PENDING",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        288,
+        -208
+      ],
+      "id": "f7c1d766-412c-47a5-b10a-c977c7408630",
+      "name": "PENDING?"
+    }
+  ],
+  "connections": {
+    "CargaUsuarios": {
+      "main": [
+        [
+          {
+            "node": "Leer Envios_log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PaymentPending_Check": {
+      "main": [
+        [
+          {
+            "node": "Pendientes de Pago",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CargaLicitaciones": {
+      "main": [
+        [
+          {
+            "node": "CargaUsuarios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "PENDING?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "PaymentPending_Check",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "CargaLicitaciones",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer Envios_log": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Boletín Diario": {
+      "main": [
+        [
+          {
+            "node": "Consolidar licitaciones enviadas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatear HTML de Correo": {
+      "main": [
+        [
+          {
+            "node": "Boletín Diario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consolidar licitaciones enviadas": {
+      "main": [
+        [
+          {
+            "node": "Actualizar Envios_Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PENDING?": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Formatear HTML de Correo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "nodeGroups": [],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "vdZzgMGEWXkNeQqY",
+    "timezone": "America/Caracas",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": [
+        null
+      ],
+      "recurrenceRuleSignatures": [
+        null
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
+  "shared": [
+    {
+      "role": "workflow:owner",
+      "workflowId": "ljNBfR8Sm9jfypfl",
+      "projectId": "TgZejVKOlIvkpozD",
+      "createdAt": "2026-10-08T19:35:43.614Z",
+      "updatedAt": "2026-10-08T19:35:43.614Z"
+    }
+  ],
+  "activeVersion": {
+    "versionId": "69be2ac6-bce1-4f3f-b36f-a31d2dcb7296",
+    "workflowId": "ljNBfR8Sm9jfypfl",
+    "nodes": [
+      {
+        "parameters": {
+          "operation": "getAll",
+          "tableId": "usuarios",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "status",
+                "condition": "neq",
+                "keyValue": "CANCELED"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          -240,
+          -208
+        ],
+        "id": "d78dafa7-e42a-42d3-9e21-3813eb7763e3",
+        "name": "CargaUsuarios",
+        "executeOnce": true,
+        "credentials": {
+          "supabaseApi": {
+            "id": "uc3lfzmHZOvjm4Eu",
+            "name": "Supabase Licitaciones"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "fromEmail": "=Licitaciones VNZLA <raspalobrasil@gmail.com>",
+          "toEmail": "={{ $json.email }}",
+          "subject": "\"Tu periodo de prueba ha finalizado  Activa tu acceso a Licitaciones Venezuela\"",
+          "html": "=<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Tu periodo de prueba ha finalizado</title>\n</head>\n<body style=\"font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333333;\">\n\n  <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #e0e0e0;\">\n    \n    <!-- Encabezado -->\n    <tr>\n      <td align=\"center\" style=\"background-color: #1e293b; padding: 30px 20px;\">\n        <h1 style=\"color: #ffffff; margin: 0; font-size: 22px; font-weight: bold;\">¡Tu periodo de prueba ha finalizado! =€</h1>\n      </td>\n    </tr>\n\n    <!-- Cuerpo del Mensaje -->\n    <tr>\n      <td style=\"padding: 30px 25px;\">\n        <p style=\"font-size: 16px; line-height: 1.5; margin-top: 0;\">Hola <strong>{{ $json.nombre || 'Usuario' }}</strong>,</p>\n        \n        <p style=\"font-size: 15px; line-height: 1.6; color: #4b5563;\">\n          Tus días de acceso gratuito a <strong>Licitaciones Venezuela</strong> han concluido. Para mantener activo tu servicio y continuar recibiendo los reportes diarios con las mejores oportunidades de contratación pública según tus sectores de interés, selecciona tu plan y modalidad de pago preferida.\n        </p>\n\n        <!-- Tarjeta Informativa / Destacada -->\n        <div style=\"background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; margin: 25px 0; text-align: center;\">\n          <p style=\"margin: 0 0 15px 0; font-size: 14px; color: #64748b;\">\n            Accede a nuestra plataforma segura para elegir entre planes <strong>Mensuales, Trimestrales, Semestrales o Anuales</strong> y pagar con <strong>Zinli, Binance Pay</strong> u otros métodos disponibles.\n          </p>\n          \n          <!-- Botón Principal hacia Netlify -->\n          <a href=\"https://lic-newuser.netlify.app/checkout?userId={{ $json.id }}\" target=\"_blank\" style=\"display: inline-block; background-color: #16a34a; color: #ffffff; font-size: 16px; font-weight: bold; text-decoration: none; padding: 14px 28px; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);\">\n            Renovar mi Suscripción Ahora =³\n          </a>\n        </div>\n\n        <p style=\"font-size: 14px; line-height: 1.5; color: #64748b; font-style: italic;\">\n          Nota: Una vez realizado el reporte en la plataforma, tu cuenta se reactivará automáticamente.\n        </p>\n      </td>\n    </tr>\n\n    <!-- Pie de página -->\n    <tr>\n      <td align=\"center\" style=\"background-color: #f9fafb; padding: 20px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #9ca3af;\">\n        Si tienes preguntas sobre los planes o métodos de pago, responde directamente a este correo.<br>\n        <strong>Licitaciones Venezuela © 2026</strong>\n      </td>\n    </tr>\n\n  </table>\n\n</body>\n</html>",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 2.1,
+        "position": [
+          -256,
+          -432
+        ],
+        "id": "0ed1a743-44d7-4233-8309-d906a99b3d65",
+        "name": "Pendientes de Pago",
+        "webhookId": "33f8e145-3649-40d0-bdb2-934e46454855",
+        "credentials": {
+          "smtp": {
+            "id": "8sJSX0mI8cnOgkel",
+            "name": "SMTP account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "tableId": "usuarios",
+          "matchType": "allFilters",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "status",
+                "condition": "eq",
+                "keyValue": "TRIAL"
+              },
+              {
+                "keyName": "trial_ends_at",
+                "condition": "lt",
+                "keyValue": "={{ $now.toISO() }}"
+              }
+            ]
+          },
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "status",
+                "fieldValue": "PENDING"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          -464,
+          -432
+        ],
+        "id": "ed199d29-d334-4571-a93c-173e664f3a3b",
+        "name": "PaymentPending_Check",
+        "alwaysOutputData": true,
+        "credentials": {
+          "supabaseApi": {
+            "id": "uc3lfzmHZOvjm4Eu",
+            "name": "Supabase Licitaciones"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "getAll",
+          "tableId": "licitaciones",
+          "limit": 150,
+          "filters": {
+            "conditions": []
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          -448,
+          -208
+        ],
+        "id": "3872e287-44b1-48f7-9d6e-b26d06889df3",
+        "name": "CargaLicitaciones",
+        "alwaysOutputData": false,
+        "credentials": {
+          "supabaseApi": {
+            "id": "uc3lfzmHZOvjm4Eu",
+            "name": "Supabase Licitaciones"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "// 1. Obtener los datos de los nodos anteriores\nconst licitaciones = $('CargaLicitaciones').all().map(item => item.json);\nconst usuarios = $('CargaUsuarios').all().map(item => item.json);\n\n// 2. Obtener el histórico de envíos desde el nodo 'Leer Envios_log'\nlet enviosLog = [];\ntry {\n  enviosLog = $('Leer Envios_log').all().map(item => item.json);\n} catch (e) {\n  enviosLog = [];\n}\n\nconst resultado = [];\n\nfor (const usuario of usuarios) {\n  const sectoresUsuario = Array.isArray(usuario.sectores) ? usuario.sectores : [];\n  const estadosUsuario = Array.isArray(usuario.estados) ? usuario.estados : [];\n\n  // Obtener los proceso_id de las licitaciones que ESTE usuario ya recibió anteriormente\n  const licitacionesYaEnviadas = enviosLog\n    .filter(log => log.usuario_id === usuario.id)\n    .map(log => log.proceso_id); // =H Cambiado a proceso_id para que coincida con tu nueva estructura\n\n  // Filtrar licitaciones del día que:\n  // - Coincidan con el sector del usuario\n  // - Coincidan con el estado geográfico (si tiene estados configurados)\n  // - NO hayan sido enviadas previamente (evita duplicados)\n  const licitacionesValidas = licitaciones.filter(lic => {\n    const coincideSector = sectoresUsuario.includes(lic.sector);\n    const coincideEstado = estadosUsuario.length === 0 || estadosUsuario.includes(lic.estado);\n    const idProcesoActual = lic.proceso_id || lic.numero_proceso;\n    const yaFueEnviada = licitacionesYaEnviadas.includes(idProcesoActual);\n\n    return coincideSector && coincideEstado && !yaFueEnviada;\n  });\n\n  // Solo incluimos al usuario si tiene licitaciones nuevas para enviarle hoy\n  if (licitacionesValidas.length > 0) {\n    resultado.push({\n      json: {\n        ...usuario,\n        licitaciones: licitacionesValidas,\n        enviar_boletin: true\n      }\n    });\n  }\n}\n\nreturn resultado;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          112,
+          -208
+        ],
+        "id": "024453d6-d51f-4264-8197-8784d61981c0",
+        "name": "Code in JavaScript"
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "weeks",
+                "triggerAtDay": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "triggerAtHour": 12,
+                "triggerAtMinute": 15
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.4,
+        "position": [
+          -656,
+          -208
+        ],
+        "id": "e1552cf5-2f45-4600-a637-c7a006e02ee8",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "fromEmail": "Licitaciones Vnzla <rafaeljgomezg@gmail.com>",
+          "toEmail": "={{ $json.email }}",
+          "subject": "=Licitaciones de Hoy {{ $today.toFormat('dd \\'de\\' MMMM \\'de\\' yyyy', { locale: 'es' }) }}",
+          "html": "={{ $json.boletin_html }}",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 2.1,
+        "position": [
+          672,
+          -64
+        ],
+        "id": "a1d53cae-924f-4c58-9934-1422f0b174cf",
+        "name": "Boletín Diario",
+        "webhookId": "9c4660f1-51c3-40e3-ba05-601eb17c9340",
+        "credentials": {
+          "smtp": {
+            "id": "8sJSX0mI8cnOgkel",
+            "name": "SMTP account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "getAll",
+          "tableId": "envios_log",
+          "limit": 1000
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          -48,
+          -208
+        ],
+        "id": "042a3aa6-d37c-4aeb-8bc2-615c30d96e0f",
+        "name": "Leer Envios_log",
+        "alwaysOutputData": true,
+        "credentials": {
+          "supabaseApi": {
+            "id": "uc3lfzmHZOvjm4Eu",
+            "name": "Supabase Licitaciones"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "for (const item of $input.all()) {\n  const usuario = item.json;\n  const licitaciones = usuario.licitaciones || [];\n\n  let contenidoHtml = '';\n\n  if (licitaciones.length === 0) {\n    contenidoHtml = `\n      <div style=\"padding: 20px; text-align: center; background-color: #f8fafc; border-radius: 6px; color: #64748b; font-size: 13px;\">\n        No se encontraron nuevas licitaciones en tus sectores el día de hoy.\n      </div>\n    `;\n  } else {\n    // 1. Agrupar por Estado geográfico\n    const agrupadasPorEstado = {};\n    for (const lic of licitaciones) {\n      const estado = lic.estado || 'Nacional / Sin Especificar';\n      if (!agrupadasPorEstado[estado]) agrupadasPorEstado[estado] = [];\n      agrupadasPorEstado[estado].push(lic);\n    }\n\n    // 2. Generar el HTML agrupado\n    contenidoHtml = Object.keys(agrupadasPorEstado).map(nombreEstado => {\n      const listaLicitaciones = agrupadasPorEstado[nombreEstado];\n      \n      const tarjetas = listaLicitaciones.map(lic => {\n        const esModificada = lic.es_modificado === true;\n        const borderColor = esModificada ? '#ef4444' : '#e2e8f0';\n        const bgColor = esModificada ? '#fef2f2' : '#fafafa';\n        \n        const tagModificada = esModificada \n          ? `<span style=\"font-size: 11px; font-weight: bold; color: #ffffff; background-color: #ef4444; padding: 3px 8px; border-radius: 4px; margin-left: 6px;\">  PRÓRROGA / MODIFICADA</span>` \n          : '';\n\n        return `\n          <div style=\"border: 1px solid ${borderColor}; border-radius: 8px; padding: 16px; margin-bottom: 14px; background-color: ${bgColor}; text-align: left;\">\n            <div style=\"margin-bottom: 8px;\">\n              <span style=\"font-size: 12px; font-weight: bold; color: #2563eb; background-color: #dbeafe; padding: 4px 8px; border-radius: 4px; text-transform: uppercase;\">\n                ${lic.sector || 'General'}\n              </span>\n              ${tagModificada}\n            </div>\n\n            <h4 style=\"margin: 6px 0; font-size: 14px; color: #1e293b; font-weight: 600;\">\n              <Û ${lic.ente_nombre || lic.organismo || 'Organismo Público'}\n            </h4>\n\n            <p style=\"margin: 8px 0 12px 0; font-size: 13px; color: #334155; line-height: 1.4;\">\n              ${lic.descripcion_objeto || 'Sin descripción detallada'}\n            </p>\n\n            \n            <div style=\"border-top: 1px solid #f1f5f9; padding-top: 10px; margin-top: 10px; display: flex; align-items: center; justify-content: space-between;\">\n              \n              <!-- *********************\n              <span style=\"font-size: 12px; color: #64748b;\">\n                =Å Límite: <strong>${lic.fecha_recepcion_ofertas || lic.fecha_limite || 'Por definir'}</strong>\n              </span> \n              *********************** -->\n              \n              <a href=\"${lic.url_pliego || lic.url_publica || '#'}\" style=\"background-color: ${esModificada ? '#991b1b' : '#0f172a'}; color: #ffffff; padding: 6px 14px; text-decoration: none; border-radius: 5px; font-size: 12px; font-weight: bold; display: inline-block;\">\n                ${esModificada ? 'Ver Adenda / Cambio ’' : 'Ver detalle ’'}\n              </a>\n            </div>\n          </div>\n        `;\n      }).join('');\n\n      return `\n        <div style=\"margin-top: 24px; margin-bottom: 12px; border-bottom: 2px solid #2563eb; padding-bottom: 6px; text-align: left;\">\n          <h3 style=\"margin: 0; font-size: 15px; color: #1e293b; text-transform: uppercase; font-weight: 700;\">\n            =Í Estado: ${nombreEstado}\n          </h3>\n        </div>\n        ${tarjetas}\n      `;\n    }).join('');\n  }\n\n  // 3. Crear el HTML completo del boletín\n  item.json.boletin_html = `\n    <!DOCTYPE html>\n    <html>\n    <head>\n      <meta charset=\"utf-8\">\n      <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    </head>\n    <body style=\"font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f6f8; margin: 0; padding: 20px; color: #333333;\">\n      <div style=\"max-width: 680px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05);\">\n        \n        <div style=\"background-color: #0f172a; padding: 24px; text-align: left; color: #ffffff;\">\n          <h2 style=\"margin: 0; font-size: 20px; font-weight: 600;\"><û<ê Licitaciones Venezuela</h2>\n          <p style=\"margin: 6px 0 0 0; font-size: 13px; color: #94a3b8;\">Resumen diario de oportunidades de contratación pública</p>\n        </div>\n\n        <div style=\"padding: 24px 24px 12px 24px; text-align: left;\">\n          <p style=\"margin: 0 0 10px 0; font-size: 15px;\">Hola <strong>${usuario.nombre || 'Suscriptor'}</strong>,</p>\n          <p style=\"margin: 0; font-size: 14px; color: #475569; line-height: 1.5;\">\n            Hemos detectado <strong>${licitaciones.length} licitaciones</strong> publicadas hoy en tus sectores y regiones seleccionados:\n          </p>\n        </div>\n\n        <div style=\"padding: 12px 24px 24px 24px;\">\n          ${contenidoHtml}\n        </div>\n\n        <div style=\"background-color: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #e2e8f0; font-size: 12px; color: #64748b;\">\n          <p style=\"margin: 0 0 8px 0;\">¿Deseas ajustar las alertas que recibes?</p>\n          <p style=\"margin: 0;\">\n            <a href=\"https://somewhat-jones-marion-guru.trycloudflare.com/webhook/preferencias?token=${usuario.access_token}&action=update\" style=\"color: #2563eb; text-decoration: underline;\">Gestionar mis sectores</a>\n            &nbsp;|&nbsp;\n            <a href=\"https://somewhat-jones-marion-guru.trycloudflare.com/webhook/desuscripcion?token=${usuario.access_token}&action=cancel\" style=\"color: #ef4444; text-decoration: underline;\">Darse de baja</a>\n          </p>\n          <p style=\"margin-top: 12px; font-size: 11px; color: #94a3b8;\">Licitaciones Venezuela © 2026</p>\n        </div>\n\n      </div>\n    </body>\n    </html>\n  `;\n}\n\nreturn $input.all();"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          480,
+          -64
+        ],
+        "id": "6d09b9fc-0541-402d-8d53-387a10261212",
+        "name": "Formatear HTML de Correo"
+      },
+      {
+        "parameters": {
+          "schema": {
+            "__rl": true,
+            "mode": "list",
+            "value": "public"
+          },
+          "table": {
+            "__rl": true,
+            "value": "envios_log",
+            "mode": "list",
+            "cachedResultName": "envios_log"
+          },
+          "columns": {
+            "mappingMode": "autoMapInputData",
+            "value": {
+              "usuario_id": "={{ $json.usuario_id }}",
+              "fecha_envio": "={{ $json.fecha_envio }}"
+            },
+            "matchingColumns": [
+              "usuario_id"
+            ],
+            "schema": [
+              {
+                "id": "id",
+                "displayName": "id",
+                "required": false,
+                "defaultMatch": true,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "usuario_id",
+                "displayName": "usuario_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "proceso_id",
+                "displayName": "proceso_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "fecha_envio",
+                "displayName": "fecha_envio",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "dateTime",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.7,
+        "position": [
+          1008,
+          -64
+        ],
+        "id": "cb3c1fa7-ffb3-4713-88bf-e4e4cf2e5aa0",
+        "name": "Actualizar Envios_Log",
+        "credentials": {
+          "postgres": {
+            "id": "iJYwy1fBjjOBKndW",
+            "name": "Postgres Licitacoines"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const resultados = [];\n\nlet itemsBoletin = [];\ntry {\n  itemsBoletin = $('Code in JavaScript').all();\n} catch (e) {\n  itemsBoletin = $input.all();\n}\n\nfor (const item of itemsBoletin) {\n  const usuario = item.json;\n  const usuarioId = usuario.id || usuario.usuario_id;\n  \n  const licitaciones = usuario.licitaciones || [];\n\n  for (const lic of licitaciones) {\n    if (usuarioId && (lic.proceso_id || lic.numero_proceso)) {\n      resultados.push({\n        json: {\n          usuario_id: usuarioId,\n          proceso_id: lic.proceso_id || lic.numero_proceso, // =H Se guarda el código de proceso\n          fecha_envio: new Date().toISOString()\n        }\n      });\n    }\n  }\n}\n\nreturn resultados;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          832,
+          -64
+        ],
+        "id": "62cb0891-9684-4320-905a-68e53e424a16",
+        "name": "Consolidar licitaciones enviadas"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "e4abece3-56c9-4549-9a74-0bb7456b266e",
+                "leftValue": "={{ $json.status }}",
+                "rightValue": "PENDING",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          288,
+          -208
+        ],
+        "id": "f7c1d766-412c-47a5-b10a-c977c7408630",
+        "name": "PENDING?"
+      }
+    ],
+    "connections": {
+      "CargaUsuarios": {
+        "main": [
+          [
+            {
+              "node": "Leer Envios_log",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "PaymentPending_Check": {
+        "main": [
+          [
+            {
+              "node": "Pendientes de Pago",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "CargaLicitaciones": {
+        "main": [
+          [
+            {
+              "node": "CargaUsuarios",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript": {
+        "main": [
+          [
+            {
+              "node": "PENDING?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "PaymentPending_Check",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "CargaLicitaciones",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Leer Envios_log": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Boletín Diario": {
+        "main": [
+          [
+            {
+              "node": "Consolidar licitaciones enviadas",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Formatear HTML de Correo": {
+        "main": [
+          [
+            {
+              "node": "Boletín Diario",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Consolidar licitaciones enviadas": {
+        "main": [
+          [
+            {
+              "node": "Actualizar Envios_Log",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "PENDING?": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Formatear HTML de Correo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "RAFAEL GOMEZ GARCIA",
+    "name": "Version 69be2ac6",
+    "description": "",
+    "autosaved": true,
+    "createdAt": "2026-10-19T14:01:07.094Z",
+    "updatedAt": "2026-10-19T14:01:11.000Z"
+  }
+}
