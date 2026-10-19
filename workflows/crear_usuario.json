@@ -1,0 +1,821 @@
+{
+  "id": "OkK2yNtCzABv7It4",
+  "name": "Crear Usuario",
+  "active": true,
+  "activeVersionId": "f72136b2-e12a-4c07-a284-526f12d1f1d1",
+  "createdAt": "2026-10-10T19:18:22.024Z",
+  "updatedAt": "2026-10-19T13:52:14.472Z",
+  "isArchived": false,
+  "versionId": "f72136b2-e12a-4c07-a284-526f12d1f1d1",
+  "triggerCount": 2,
+  "nodes": [
+    {
+      "parameters": {
+        "tableId": "usuarios",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "email",
+              "fieldValue": "={{ $json.email }}"
+            },
+            {
+              "fieldId": "nombre",
+              "fieldValue": "={{ $json.nombre }}"
+            },
+            {
+              "fieldId": "plan",
+              "fieldValue": "={{ $json.plan }}"
+            },
+            {
+              "fieldId": "status",
+              "fieldValue": "={{ $json.status }}"
+            },
+            {
+              "fieldId": "telefono",
+              "fieldValue": "={{ $json.telefono }}"
+            },
+            {
+              "fieldId": "access_token",
+              "fieldValue": "={{ $json.access_token }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        128,
+        256
+      ],
+      "id": "be0fc996-57c5-4928-82ad-459413f98604",
+      "name": "Create a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "uc3lfzmHZOvjm4Eu",
+          "name": "Supabase Licitaciones"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "usuarios",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "email",
+              "keyValue": "={{ $json.body.email }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -112,
+        -64
+      ],
+      "id": "9fd3b1bc-47d2-46f5-b70e-c15d85d61bc1",
+      "name": "Get a row",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "uc3lfzmHZOvjm4Eu",
+          "name": "Supabase Licitaciones"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Obtenemos los datos directamente desde el nodo webhook inicial\nconst input = $('Recepcion Formulario').first().json.body;\n\n// Codificamos los datos básicos para enviarlos de forma segura en la URL de verificación\nconst tokenDatos = Buffer.from(JSON.stringify({\n    nombre: input.nombre,\n    email: input.email,\n    telefono: input.telefono\n})).toString('base64');\n\nreturn {\n    json: {\n        nombre: input.nombre,\n        email: input.email,\n        enlaceVerificacion: `https://somewhat-jones-marion-guru.trycloudflare.com/webhook/verificar?token=${tokenDatos}`\n    }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        336,
+        32
+      ],
+      "id": "08ee0aa2-fa8b-4525-84da-7f59cb019e67",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "crear-usuario",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -336,
+        -64
+      ],
+      "id": "f111bc8c-b8cb-4716-8590-5ecbf6678354",
+      "name": "Recepcion Formulario",
+      "webhookId": "38f259d1-00de-483e-b8c4-c1ca404b68fd"
+    },
+    {
+      "parameters": {
+        "path": "verificar",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -336,
+        256
+      ],
+      "id": "0f877d02-fa9b-492d-8fd9-2e99524cff12",
+      "name": "Verificar",
+      "webhookId": "38f259d1-00de-483e-b8c4-c1ca404b68fd"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "=<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Verificación Exitosa - Licitaciones Venezuela</title>\n    <meta http-equiv=\"refresh\" content=\"1;url=https://somewhat-jones-marion-guru.trycloudflare.com/webhook/preferencias?token={{ $('Code in JavaScript1').first().json.access_token }}\">\n    <script src=\"https://cdn.tailwindcss.com\"></script>\n</head>\n<body class=\"bg-slate-50 min-h-screen flex items-center justify-center p-4\">\n    <div class=\"max-w-md w-full bg-white border border-slate-200 rounded-2xl shadow-xl p-8 text-center\">\n        <!-- Ícono de éxito -->\n        <div class=\"mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-blue-100 text-blue-800 shadow-inner\">\n            <svg class=\"size-8\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n                <path d=\"m5 12 4 4L19 6\" />\n            </svg>\n        </div>\n\n        <!-- Mensajes -->\n        <h1 class=\"text-2xl font-bold tracking-tight text-slate-900\">\n            ¡Cuenta verificada con éxito!\n        </h1>\n        <p class=\"mt-3 text-sm leading-6 text-slate-600\">\n            Tu correo ha sido confirmado correctamente. Te estamos redirigiendo a tu panel de configuración...\n        </p>\n\n        <!-- Indicador de carga -->\n        <div class=\"mt-6 flex justify-center\">\n            <div class=\"inline-block size-6 animate-spin rounded-full border-2 border-blue-800 border-t-transparent\"></div>\n        </div>\n    </div>\n</body>\n</html>",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        480,
+        256
+      ],
+      "id": "07192612-f9dc-4d1d-9d75-1f6d686c485f",
+      "name": "Cargar Sectores"
+    },
+    {
+      "parameters": {
+        "fromEmail": "Rafael Gomez <rafaeljgomezg@gmail.com>",
+        "toEmail": "={{ $('Code in JavaScript').first().json.email }}",
+        "subject": "Solicitud de Registro a Licitaciones Venezuela",
+        "html": "=<p>Hola <strong>{{ $json.nombre }}</strong>,</p>\n<p>Hemos recibido tu solicitud de registro. Haz clic en el siguiente botón para verificar tu correo y activar tu cuenta:</p>\n<p style=\"text-align: center; margin: 25px 0;\">\n    <a href=\"{{ $json.enlaceVerificacion }}\" style=\"background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;\">\n        Verificar mi correo\n    </a>\n</p>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        560,
+        32
+      ],
+      "id": "ecfb47aa-dad1-4fc9-8e50-318d94e6cc61",
+      "name": "2factor email",
+      "webhookId": "e19d33c9-6631-4094-8410-2f553b7905e1",
+      "credentials": {
+        "smtp": {
+          "id": "8sJSX0mI8cnOgkel",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={ \"status\": \"success\"}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        784,
+        48
+      ],
+      "id": "0f7f38ee-969a-4460-a6d5-97f4cf2b8fdc",
+      "name": "Redireccion"
+    },
+    {
+      "parameters": {
+        "jsCode": "const token = $json.query.token;\nconst datosDecodificados = JSON.parse(Buffer.from(token, 'base64').toString('utf8'));\n\n// Generador de UUID v4 en JavaScript puro\nconst uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {\n    const r = Math.random() * 16 | 0;\n    const v = c === 'x' ? r : (r & 0x3 | 0x8);\n    return v.toString(16);\n});\n\nreturn {\n    json: {\n        nombre: datosDecodificados.nombre,\n        email: datosDecodificados.email,\n        telefono: datosDecodificados.telefono,\n        plan: 'FREE',\n        status: 'TRIAL',\n        access_token: uuid\n    }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -48,
+        256
+      ],
+      "id": "e3c7acc0-3f65-472d-837a-65e1666dcfce",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"error\",\n  \"message\": \"Este correo ya se encuentra registrado\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        272,
+        -240
+      ],
+      "id": "071650aa-1e2b-45f3-9f5a-31e8e4d9d81f",
+      "name": "Usuario Existe",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "6932c743-53d9-4a47-b1fc-ce058e51b172",
+              "leftValue": "={{ $('Get a row').item.json.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        112,
+        -64
+      ],
+      "id": "a9f7a266-70a1-4d11-92a6-65bb406d32b5",
+      "name": "Existe?",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "fromEmail": "Rafael Gomez <raspalobrasil@gmail.com>",
+        "toEmail": "={{ $json.email }}",
+        "subject": "Bienvenido!. Usuario creado con Exito",
+        "html": "=<p>¡Correo verificado con éxito!</p>\n<p>Tu cuenta en Licitaciones Venezuela está activa. Haz clic abajo para configurar tus sectores:</p>\n<br>\n\n<p style=\"text-align: center; margin: 30px 0;\">\n    <a href=\"https://somewhat-jones-marion-guru.trycloudflare.com/webhook/preferencias?token={{ $('Code in JavaScript1').first().json.access_token }}\" style=\"background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;\">\n        Seleccionar sectores\n    </a>\n</p>\n\n<p>Si el botón no funciona, también puedes copiar y pegar el siguiente enlace en tu navegador:</p>\n<p style=\"word-break: break-all; color: #6b7280; font-size: 12px;\">\n    https://somewhat-jones-marion-guru.trycloudflare.com/webhook/preferencias?token={{ $('Code in JavaScript1').first().json.access_token }}\n</p>\n<br>\n<h4><strong>No borres este correo para que modifiques tus preferencias de sectores en cualquier momento.</strong></h4>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        304,
+        256
+      ],
+      "id": "053804d1-fe08-42e4-a7f6-2b0d331acae9",
+      "name": "email verificado",
+      "webhookId": "b5a7bbd4-373e-424f-86b5-f42866a8e942",
+      "credentials": {
+        "smtp": {
+          "id": "8sJSX0mI8cnOgkel",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Create a row": {
+      "main": [
+        [
+          {
+            "node": "email verificado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a row": {
+      "main": [
+        [
+          {
+            "node": "Existe?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "2factor email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recepcion Formulario": {
+      "main": [
+        [
+          {
+            "node": "Get a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2factor email": {
+      "main": [
+        [
+          {
+            "node": "Redireccion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Create a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Existe?": {
+      "main": [
+        [
+          {
+            "node": "Usuario Existe",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "email verificado": {
+      "main": [
+        [
+          {
+            "node": "Cargar Sectores",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "nodeGroups": [],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "vdZzgMGEWXkNeQqY",
+    "timezone": "America/Caracas",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
+  "shared": [
+    {
+      "role": "workflow:owner",
+      "workflowId": "OkK2yNtCzABv7It4",
+      "projectId": "TgZejVKOlIvkpozD",
+      "createdAt": "2026-10-10T19:18:22.032Z",
+      "updatedAt": "2026-10-10T19:18:22.032Z"
+    }
+  ],
+  "activeVersion": {
+    "versionId": "f72136b2-e12a-4c07-a284-526f12d1f1d1",
+    "workflowId": "OkK2yNtCzABv7It4",
+    "nodes": [
+      {
+        "parameters": {
+          "tableId": "usuarios",
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "email",
+                "fieldValue": "={{ $json.email }}"
+              },
+              {
+                "fieldId": "nombre",
+                "fieldValue": "={{ $json.nombre }}"
+              },
+              {
+                "fieldId": "plan",
+                "fieldValue": "={{ $json.plan }}"
+              },
+              {
+                "fieldId": "status",
+                "fieldValue": "={{ $json.status }}"
+              },
+              {
+                "fieldId": "telefono",
+                "fieldValue": "={{ $json.telefono }}"
+              },
+              {
+                "fieldId": "access_token",
+                "fieldValue": "={{ $json.access_token }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          128,
+          256
+        ],
+        "id": "be0fc996-57c5-4928-82ad-459413f98604",
+        "name": "Create a row",
+        "credentials": {
+          "supabaseApi": {
+            "id": "uc3lfzmHZOvjm4Eu",
+            "name": "Supabase Licitaciones"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "tableId": "usuarios",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "email",
+                "keyValue": "={{ $json.body.email }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          -112,
+          -64
+        ],
+        "id": "9fd3b1bc-47d2-46f5-b70e-c15d85d61bc1",
+        "name": "Get a row",
+        "alwaysOutputData": true,
+        "credentials": {
+          "supabaseApi": {
+            "id": "uc3lfzmHZOvjm4Eu",
+            "name": "Supabase Licitaciones"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "// Obtenemos los datos directamente desde el nodo webhook inicial\nconst input = $('Recepcion Formulario').first().json.body;\n\n// Codificamos los datos básicos para enviarlos de forma segura en la URL de verificación\nconst tokenDatos = Buffer.from(JSON.stringify({\n    nombre: input.nombre,\n    email: input.email,\n    telefono: input.telefono\n})).toString('base64');\n\nreturn {\n    json: {\n        nombre: input.nombre,\n        email: input.email,\n        enlaceVerificacion: `https://somewhat-jones-marion-guru.trycloudflare.com/webhook/verificar?token=${tokenDatos}`\n    }\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          336,
+          32
+        ],
+        "id": "08ee0aa2-fa8b-4525-84da-7f59cb019e67",
+        "name": "Code in JavaScript"
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "crear-usuario",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          -336,
+          -64
+        ],
+        "id": "f111bc8c-b8cb-4716-8590-5ecbf6678354",
+        "name": "Recepcion Formulario",
+        "webhookId": "38f259d1-00de-483e-b8c4-c1ca404b68fd"
+      },
+      {
+        "parameters": {
+          "path": "verificar",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          -336,
+          256
+        ],
+        "id": "0f877d02-fa9b-492d-8fd9-2e99524cff12",
+        "name": "Verificar",
+        "webhookId": "38f259d1-00de-483e-b8c4-c1ca404b68fd"
+      },
+      {
+        "parameters": {
+          "respondWith": "text",
+          "responseBody": "=<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Verificación Exitosa - Licitaciones Venezuela</title>\n    <meta http-equiv=\"refresh\" content=\"1;url=https://somewhat-jones-marion-guru.trycloudflare.com/webhook/preferencias?token={{ $('Code in JavaScript1').first().json.access_token }}\">\n    <script src=\"https://cdn.tailwindcss.com\"></script>\n</head>\n<body class=\"bg-slate-50 min-h-screen flex items-center justify-center p-4\">\n    <div class=\"max-w-md w-full bg-white border border-slate-200 rounded-2xl shadow-xl p-8 text-center\">\n        <!-- Ícono de éxito -->\n        <div class=\"mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-blue-100 text-blue-800 shadow-inner\">\n            <svg class=\"size-8\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n                <path d=\"m5 12 4 4L19 6\" />\n            </svg>\n        </div>\n\n        <!-- Mensajes -->\n        <h1 class=\"text-2xl font-bold tracking-tight text-slate-900\">\n            ¡Cuenta verificada con éxito!\n        </h1>\n        <p class=\"mt-3 text-sm leading-6 text-slate-600\">\n            Tu correo ha sido confirmado correctamente. Te estamos redirigiendo a tu panel de configuración...\n        </p>\n\n        <!-- Indicador de carga -->\n        <div class=\"mt-6 flex justify-center\">\n            <div class=\"inline-block size-6 animate-spin rounded-full border-2 border-blue-800 border-t-transparent\"></div>\n        </div>\n    </div>\n</body>\n</html>",
+          "options": {
+            "responseHeaders": {
+              "entries": [
+                {
+                  "name": "Content-Type",
+                  "value": "text/html"
+                }
+              ]
+            }
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.5,
+        "position": [
+          480,
+          256
+        ],
+        "id": "07192612-f9dc-4d1d-9d75-1f6d686c485f",
+        "name": "Cargar Sectores"
+      },
+      {
+        "parameters": {
+          "fromEmail": "Rafael Gomez <rafaeljgomezg@gmail.com>",
+          "toEmail": "={{ $('Code in JavaScript').first().json.email }}",
+          "subject": "Solicitud de Registro a Licitaciones Venezuela",
+          "html": "=<p>Hola <strong>{{ $json.nombre }}</strong>,</p>\n<p>Hemos recibido tu solicitud de registro. Haz clic en el siguiente botón para verificar tu correo y activar tu cuenta:</p>\n<p style=\"text-align: center; margin: 25px 0;\">\n    <a href=\"{{ $json.enlaceVerificacion }}\" style=\"background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;\">\n        Verificar mi correo\n    </a>\n</p>",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 2.1,
+        "position": [
+          560,
+          32
+        ],
+        "id": "ecfb47aa-dad1-4fc9-8e50-318d94e6cc61",
+        "name": "2factor email",
+        "webhookId": "e19d33c9-6631-4094-8410-2f553b7905e1",
+        "credentials": {
+          "smtp": {
+            "id": "8sJSX0mI8cnOgkel",
+            "name": "SMTP account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "respondWith": "text",
+          "responseBody": "={ \"status\": \"success\"}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.5,
+        "position": [
+          784,
+          48
+        ],
+        "id": "0f7f38ee-969a-4460-a6d5-97f4cf2b8fdc",
+        "name": "Redireccion"
+      },
+      {
+        "parameters": {
+          "jsCode": "const token = $json.query.token;\nconst datosDecodificados = JSON.parse(Buffer.from(token, 'base64').toString('utf8'));\n\n// Generador de UUID v4 en JavaScript puro\nconst uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {\n    const r = Math.random() * 16 | 0;\n    const v = c === 'x' ? r : (r & 0x3 | 0x8);\n    return v.toString(16);\n});\n\nreturn {\n    json: {\n        nombre: datosDecodificados.nombre,\n        email: datosDecodificados.email,\n        telefono: datosDecodificados.telefono,\n        plan: 'FREE',\n        status: 'TRIAL',\n        access_token: uuid\n    }\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -48,
+          256
+        ],
+        "id": "e3c7acc0-3f65-472d-837a-65e1666dcfce",
+        "name": "Code in JavaScript1"
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "={\n  \"status\": \"error\",\n  \"message\": \"Este correo ya se encuentra registrado\"\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.5,
+        "position": [
+          272,
+          -240
+        ],
+        "id": "071650aa-1e2b-45f3-9f5a-31e8e4d9d81f",
+        "name": "Usuario Existe",
+        "alwaysOutputData": false
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "6932c743-53d9-4a47-b1fc-ce058e51b172",
+                "leftValue": "={{ $('Get a row').item.json.email }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          112,
+          -64
+        ],
+        "id": "a9f7a266-70a1-4d11-92a6-65bb406d32b5",
+        "name": "Existe?",
+        "alwaysOutputData": false
+      },
+      {
+        "parameters": {
+          "fromEmail": "Rafael Gomez <raspalobrasil@gmail.com>",
+          "toEmail": "={{ $json.email }}",
+          "subject": "Bienvenido!. Usuario creado con Exito",
+          "html": "=<p>¡Correo verificado con éxito!</p>\n<p>Tu cuenta en Licitaciones Venezuela está activa. Haz clic abajo para configurar tus sectores:</p>\n<br>\n\n<p style=\"text-align: center; margin: 30px 0;\">\n    <a href=\"https://somewhat-jones-marion-guru.trycloudflare.com/webhook/preferencias?token={{ $('Code in JavaScript1').first().json.access_token }}\" style=\"background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;\">\n        Seleccionar sectores\n    </a>\n</p>\n\n<p>Si el botón no funciona, también puedes copiar y pegar el siguiente enlace en tu navegador:</p>\n<p style=\"word-break: break-all; color: #6b7280; font-size: 12px;\">\n    https://somewhat-jones-marion-guru.trycloudflare.com/webhook/preferencias?token={{ $('Code in JavaScript1').first().json.access_token }}\n</p>\n<br>\n<h4><strong>No borres este correo para que modifiques tus preferencias de sectores en cualquier momento.</strong></h4>",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 2.1,
+        "position": [
+          304,
+          256
+        ],
+        "id": "053804d1-fe08-42e4-a7f6-2b0d331acae9",
+        "name": "email verificado",
+        "webhookId": "b5a7bbd4-373e-424f-86b5-f42866a8e942",
+        "credentials": {
+          "smtp": {
+            "id": "8sJSX0mI8cnOgkel",
+            "name": "SMTP account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Create a row": {
+        "main": [
+          [
+            {
+              "node": "email verificado",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get a row": {
+        "main": [
+          [
+            {
+              "node": "Existe?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript": {
+        "main": [
+          [
+            {
+              "node": "2factor email",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Recepcion Formulario": {
+        "main": [
+          [
+            {
+              "node": "Get a row",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Verificar": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "2factor email": {
+        "main": [
+          [
+            {
+              "node": "Redireccion",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript1": {
+        "main": [
+          [
+            {
+              "node": "Create a row",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Existe?": {
+        "main": [
+          [
+            {
+              "node": "Usuario Existe",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "email verificado": {
+        "main": [
+          [
+            {
+              "node": "Cargar Sectores",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "RAFAEL GOMEZ GARCIA",
+    "name": "Version f72136b2",
+    "description": "",
+    "autosaved": true,
+    "createdAt": "2026-10-14T23:12:23.160Z",
+    "updatedAt": "2026-10-14T23:12:33.000Z"
+  }
+}
