@@ -1,0 +1,144 @@
+{
+  "id": "0YdRUW2W6THjr69S",
+  "name": "test Carga archivo PDF licitaciones",
+  "active": false,
+  "activeVersionId": null,
+  "createdAt": "2026-10-19T23:29:18.730Z",
+  "updatedAt": "2026-10-19T23:29:45.830Z",
+  "isArchived": false,
+  "versionId": "a16b23d5-d73a-4c5b-8298-900f85980dae",
+  "triggerCount": 0,
+  "nodes": [
+    {
+      "parameters": {
+        "url": "={{\"https://api.scraperapi.com?api_key=927512677ce90493261d9ca164f662ae&url=\" + encodeURIComponent(\"https://sistemaintegrado.snc.gob.ve/api/v1/public/llamados-concurso/pdf?rif=F000000004&numero=A-163-26-0078-M\")}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Referer",
+              "value": "https://sistemaintegrado.snc.gob.ve/consultasnc/llamados-concurso"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "={{\"identity\"}}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        208,
+        0
+      ],
+      "id": "6bd63900-c93a-4300-abe5-88b58e4371f6",
+      "name": "HTTP Request2",
+      "retryOnFail": false,
+      "maxTries": 3
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "fd119c13-28cf-45e6-be71-b50023d841e0",
+      "name": "When clicking Execute workflow"
+    },
+    {
+      "parameters": {
+        "jsCode": "const result = [];\n\nfor (const item of $input.all()) {\n  const original = $('url_pdf').item.json; // O recuperas los datos del loop\n  \n  let rawText = item.json.text || item.json.output || \"\";\n  rawText = rawText.replace(/```json/g, \"\").replace(/```/g, \"\").trim();\n  \n  let datosExtraidos = {};\n  try {\n    datosExtraidos = JSON.parse(rawText);\n  } catch (e) {\n    const match = rawText.match(/\\{[\\s\\S]*\\}/);\n    if (match) datosExtraidos = JSON.parse(match[0]);\n  }\n\n  result.push({\n    json: {\n      proceso_id: original.numero_proceso || original.proceso_id,\n      ente_nombre: original.organoente || original.ente_nombre,\n      ente_rif: original.rif || original.ente_rif,\n      modalidad: original.estatus || original.modalidad,\n      tipo_objeto: original.objeto_contratacion || original.tipo_objeto,\n      descripcion_objeto: original.denominacion_proceso || original.descripcion_objeto,\n      codigo_clasificacion_rnc: datosExtraidos.codigo_clasificacion_rnc || [],\n      fecha_limite_retiro: datosExtraidos.fecha_limite_retiro || null,\n      fecha_recepcion_ofertas: datosExtraidos.fecha_recepcion_ofertas || null,\n      url_publica: datosExtraidos.url_publica || original.url_pdf || \"\"\n    }\n  });\n}\n\nreturn result;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        752,
+        0
+      ],
+      "id": "a80e61a6-933b-4b83-a5e0-8b13bf160a61",
+      "name": "Code in JavaScript4"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        528,
+        0
+      ],
+      "id": "fb5e5be8-6f30-47bd-996e-afa6d1f8f10d",
+      "name": "Extract from File1"
+    }
+  ],
+  "connections": {
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking Execute workflow": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "nodeGroups": [],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "pinData": {},
+  "meta": null,
+  "tags": [],
+  "shared": [
+    {
+      "role": "workflow:owner",
+      "workflowId": "0YdRUW2W6THjr69S",
+      "projectId": "TgZejVKOlIvkpozD",
+      "createdAt": "2026-10-19T23:29:18.745Z",
+      "updatedAt": "2026-10-19T23:29:18.745Z"
+    }
+  ],
+  "activeVersion": null
+}
